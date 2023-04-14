@@ -3,7 +3,6 @@
 # and managing the overall game state.
 
 import pygame
-import sys
 
 from level_manager import LevelManager
 
@@ -79,6 +78,13 @@ class GameManager:
 
     # Start main game loop
     def start(self):
+        
+        # Start timer
+        start_timer = pygame.time.get_ticks()
+        
+        # Time to delay in milliseconds
+        delay_timer = 5000
+        
         while not self.game_over: 
             
             self.show_loading_screen()
@@ -94,11 +100,18 @@ class GameManager:
                 if event.type == pygame.QUIT:
                     self.__game_over = True
                     
+            current_time = pygame.time.get_ticks()
+            
+            # Reference : https://stackoverflow.com/questions/
+            # 18839039/how-to-wait-some-time-in-pygame
+            if current_time - start_timer >= delay_timer:
+                pass
+                    
             # Update the display continuously
             pygame.display.update();
                     
     def show_loading_screen(self):
-        
+            
         # Change background color
         self.__screen.fill((11, 36, 71))   
         
