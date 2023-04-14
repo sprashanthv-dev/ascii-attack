@@ -3,6 +3,7 @@
 # and managing the overall game state.
 
 import pygame
+import sys
 
 from level_manager import LevelManager
 
@@ -53,6 +54,15 @@ class GameManager:
         # Initialize pygame library
         pygame.init()
 
+        # Load the background music file
+        pygame.mixer.music.load('./assets/sounds/in_game.mp3')
+
+        # Set the volume of the background music
+        pygame.mixer.music.set_volume(0.5)
+
+        # Play the background music on loop
+        pygame.mixer.music.play(-1)
+
         # Create the game window
         screen = pygame.display.set_mode((self.width, self.height))
         
@@ -62,7 +72,6 @@ class GameManager:
         # Modify game icon
         icon = pygame.image.load('./assets/img/title_icon.png')
         pygame.display.set_icon(icon)
-        
         
         # Store a reference to the game screen
         # to access it later
@@ -107,7 +116,7 @@ class GameManager:
         self.__screen.blit(title, (title_x, title_y))
         
         # Set Loading Text and position
-        loader_font = pygame.font.Font('./assets/fonts/Nice Sugar.ttf', 32)
+        loader_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 32)
         
         loader_x = 420
         loader_y = 380
