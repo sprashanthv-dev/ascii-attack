@@ -20,12 +20,10 @@ class WelcomeScreen:
         font = pygame.font.Font("./assets/fonts/NiceSugar.ttf", 64)
         
         self.start_game = Button(self.screen, "New Game", 448, 200, font)
-        self.view_rules = Button(self.screen, "Rules", 514, 250, font)
-        self.view_leaderboard = Button(self.screen, "Leaderboard", 514, 300, font)
-        self.quit_game = Button(self.screen, "Quit", 514, 350, font)
+        self.view_rules = Button(self.screen, "Rules", 448, 250, font)
+        self.view_leaderboard = Button(self.screen, "Leaderboard", 448, 300, font)
+        self.quit_game = Button(self.screen, "Quit", 448, 350, font)
         
-        self.draw()
-
     def handle_interactions(self):
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():

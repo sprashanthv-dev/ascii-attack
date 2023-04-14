@@ -104,10 +104,11 @@ class GameManager:
             # Reference : https://stackoverflow.com/questions/
             # 18839039/how-to-wait-some-time-in-pygame
             if current_time - start_timer >= delay_timer:
-                WelcomeScreen(self)
+                WelcomeScreen(self).draw()
+                WelcomeScreen(self).handle_interactions()
                     
             # Update the display continuously
-            pygame.display.update();
+            pygame.display.update()
                     
     def show_loading_screen(self):
             
