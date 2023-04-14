@@ -83,7 +83,7 @@ class GameManager:
         start_timer = pygame.time.get_ticks()
         
         # Time to delay in milliseconds
-        delay_timer = 5000
+        delay_timer = 4000
         
         while not self.game_over: 
             
