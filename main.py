@@ -7,4 +7,3 @@ from level_manager import LevelManager
 
 level_manager = LevelManager()
 game_manager = GameManager(level_manager)
-

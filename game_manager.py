@@ -6,18 +6,17 @@ import pygame
 
 from level_manager import LevelManager
 
-title = "Ascii Attack"
-
 # TODO: Change this to a singleton
 class GameManager:
     def __init__(self, level_manager: LevelManager) -> None:
 
         # Assign to self object
         self.__game_over = False
-        self.__width = 1200
-        self.__height = 700
+        self.__width = 1024
+        self.__height = 768
         self.__screen = None
         self.__level_manager = level_manager
+        self.__title = "Ascii Attack"
 
         self.__setup()
         self.start()
@@ -58,7 +57,7 @@ class GameManager:
         screen = pygame.display.set_mode((self.width, self.height))
         
         # Modify game title
-        pygame.display.set_caption(title)
+        pygame.display.set_caption(self.__title)
         
         # Modify game icon
         icon = pygame.image.load('./assets/img/title_icon.png')
@@ -71,10 +70,9 @@ class GameManager:
 
     # Start main game loop
     def start(self):
-        while not self.game_over:
+        while not self.game_over: 
             
-            # Change background color
-            self.__screen.fill((0, 0, 0))
+            self.show_loading_screen()
             
             # TODO : Move to an event manager class ??
             # Get a list of events happening within the game window
@@ -82,13 +80,44 @@ class GameManager:
             
             # Check if close button on toolbar was clicked
             for event in events:
+                # Close the game window when the 
+                # player presses the close button
                 if event.type == pygame.QUIT:
                     self.__game_over = True
-            
-
+                    
+            # Update the display continuously
+            pygame.display.update();
+                    
+    def show_loading_screen(self):
+        
+        # Change background color
+        self.__screen.fill((11, 36, 71))   
+        
+        # TODO : Refactor this to a method      
+        # Set Title Text and position
+        title_font = pygame.font.Font('./assets/fonts/SuperMario256.ttf', 96)
+        
+        title_x = 150
+        title_y = 260
+        title_text = self.__title.upper()
+        
+        title = title_font.render(title_text, True, (255, 201, 60))
+        
+        # Render loading text on the screen
+        self.__screen.blit(title, (title_x, title_y))
+        
+        # Set Loading Text and position
+        loader_font = pygame.font.Font('./assets/fonts/Nice Sugar.ttf', 32)
+        
+        loader_x = 420
+        loader_y = 380
+        loader_text = "Loading ..."
+        
+        loader = loader_font.render(loader_text, True, (255, 255, 255))
+        
+        # Render title on the screen
+        self.__screen.blit(loader, (loader_x, loader_y))
+        
     # End the game
     def end(self):
         pass
-    
-    # Close the game window when the 
-    # player presses the close button
