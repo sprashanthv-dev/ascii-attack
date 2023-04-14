@@ -5,6 +5,7 @@
 import pygame
 
 from level_manager import LevelManager
+from welcome_screen import WelcomeScreen
 
 # TODO: Change this to a singleton
 class GameManager:
@@ -41,6 +42,10 @@ class GameManager:
     @property
     def level_manager(self):
         return self.__level_manager
+    
+    @property
+    def title(self):
+        return self.__title
 
     # Allow game over attribute
     # to be changed through setter
@@ -52,15 +57,9 @@ class GameManager:
 
         # Initialize pygame library
         pygame.init()
-
-        # Load the background music file
-        pygame.mixer.music.load('./assets/sounds/in_game.mp3')
-
-        # Set the volume of the background music
-        pygame.mixer.music.set_volume(0.5)
-
-        # Play the background music on loop
-        pygame.mixer.music.play(-1)
+        
+        # Add background music in loop
+        self.play_background_music()
 
         # Create the game window
         screen = pygame.display.set_mode((self.width, self.height))
@@ -105,7 +104,7 @@ class GameManager:
             # Reference : https://stackoverflow.com/questions/
             # 18839039/how-to-wait-some-time-in-pygame
             if current_time - start_timer >= delay_timer:
-                pass
+                WelcomeScreen(self)
                     
             # Update the display continuously
             pygame.display.update();
@@ -139,6 +138,16 @@ class GameManager:
         
         # Render title on the screen
         self.__screen.blit(loader, (loader_x, loader_y))
+        
+    def play_background_music(self):        
+        # Load the background music file
+        pygame.mixer.music.load('./assets/sounds/in_game.mp3')
+
+        # Set the volume of the background music
+        pygame.mixer.music.set_volume(0.5)
+
+        # Play the background music on loop
+        pygame.mixer.music.play(-1)
         
     # End the game
     def end(self):
