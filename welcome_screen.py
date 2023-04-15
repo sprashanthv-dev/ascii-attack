@@ -3,7 +3,7 @@ from button import Button
 from pygame.locals import *
 
 class WelcomeScreen:
-    def __init__(self, game_manager):    
+    def __init__(self, game_manager):            
         self.game_manager = game_manager
         self.screen = self.game_manager.screen
         self.title = self.game_manager.title
@@ -32,8 +32,11 @@ class WelcomeScreen:
     def handle_interactions(self):
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
+            
+            # If the player clicks on cross icon in toolbar
+            # Or if the player clicks on the quit button
+            if event.type == QUIT or self.quit_game.is_clicked(event):
+                self.game_manager.game_over = True
             if self.start_game.is_clicked(event):
                 # TODO: Handle start game action
                 pass
@@ -43,11 +46,6 @@ class WelcomeScreen:
             if self.view_leaderboard.is_clicked(event):
                 # TODO: Handle view leaderboard action
                 pass
-            if self.quit_game.is_clicked(event):
-                pygame.quit()
-                
-        self.draw()
-        pygame.display.update()
 
     def draw(self):
         self.screen.blit(self.background_image, (0, 0))
@@ -64,5 +62,3 @@ class WelcomeScreen:
         self.view_rules.draw(font)
         self.view_leaderboard.draw(font)
         self.quit_game.draw(font)
-
-        pygame.display.update()

@@ -52,6 +52,7 @@ class GameManager:
     @game_over.setter
     def game_over(self, value: bool):
         self.__game_over = value
+        self.handle_quit_game()
 
     def __setup(self):
 
@@ -97,18 +98,22 @@ class GameManager:
                 # Close the game window when the 
                 # player presses the close button
                 if event.type == pygame.QUIT:
-                    self.__game_over = True
+                    self.game_over = True
                     
             current_time = pygame.time.get_ticks()
             
             # Reference : https://stackoverflow.com/questions/
             # 18839039/how-to-wait-some-time-in-pygame
             if current_time - start_timer >= delay_timer:
-                WelcomeScreen(self).draw()
-                WelcomeScreen(self).handle_interactions()
-                    
-            # Update the display continuously
-            pygame.display.update()
+                # TODO: Change to singleton
+                welcome_screen = WelcomeScreen(self)
+                
+                welcome_screen.draw()
+                welcome_screen.handle_interactions()
+ 
+            if not self.game_over:
+                # Update the display continuously
+                pygame.display.update()
                     
     def show_loading_screen(self):
             
@@ -140,7 +145,7 @@ class GameManager:
         # Render title on the screen
         self.__screen.blit(loader, (loader_x, loader_y))
         
-    def play_background_music(self):        
+    def play_background_music(self):                        
         # Load the background music file
         pygame.mixer.music.load('./assets/sounds/in_game.mp3')
 
@@ -149,6 +154,9 @@ class GameManager:
 
         # Play the background music on loop
         pygame.mixer.music.play(-1)
+        
+    def handle_quit_game(self):
+        pygame.quit()
         
     # End the game
     def end(self):
