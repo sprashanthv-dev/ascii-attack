@@ -5,19 +5,22 @@
 import pygame
 
 from level_manager import LevelManager
+from ui_manager import UIManager
 from welcome_screen import WelcomeScreen
 
 # TODO: Change this to a singleton
 class GameManager:
-    def __init__(self, level_manager: LevelManager) -> None:
+    def __init__(self, level_manager: LevelManager, ui_manager : UIManager) -> None:
 
         # Assign to self object
         self.__game_over = False
         self.__width = 1024
         self.__height = 768
+        self.__title = "Ascii Attack"
+
         self.__screen = None
         self.__level_manager = level_manager
-        self.__title = "Ascii Attack"
+        self.__ui_manager = ui_manager
 
         self.__setup()
         self.start()
@@ -42,6 +45,10 @@ class GameManager:
     @property
     def level_manager(self):
         return self.__level_manager
+    
+    @property
+    def ui_manager(self):
+        return self.__ui_manager
     
     @property
     def title(self):
@@ -106,7 +113,7 @@ class GameManager:
             # 18839039/how-to-wait-some-time-in-pygame
             if current_time - start_timer >= delay_timer:
                 # TODO: Change to singleton
-                welcome_screen = WelcomeScreen(self)
+                welcome_screen = WelcomeScreen(self, self.ui_manager)
                 
                 welcome_screen.draw()
                 welcome_screen.handle_interactions()

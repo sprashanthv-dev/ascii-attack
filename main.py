@@ -4,6 +4,8 @@
 
 from game_manager import GameManager
 from level_manager import LevelManager
+from ui_manager import UIManager
 
 level_manager = LevelManager()
-game_manager = GameManager(level_manager)
+ui_manager = UIManager()
+game_manager = GameManager(level_manager, ui_manager)
