@@ -2,6 +2,7 @@ import pygame
 from button import Button
 from pygame.locals import *
 
+# TODO: Change to singleton
 class WelcomeScreen:
     counter : int = 0
     
@@ -36,6 +37,7 @@ class WelcomeScreen:
         self.view_leaderboard = Button(self.screen, "Leaderboard", button_params["x"], button_params["y"] + 2 * button_params["spacing"])
         self.quit_game = Button(self.screen, "Quit", button_params["x"], button_params["y"] + 3 * button_params["spacing"])
 
+    # TODO: Observer pattern implementation here ??
     def handle_interactions(self):
         for event in pygame.event.get():
             
@@ -44,8 +46,9 @@ class WelcomeScreen:
             if event.type == QUIT or self.quit_game.is_clicked(event):
                 self.game_manager.game_over = True
             if self.start_game.is_clicked(event):
-                # TODO: Handle start game action
-                pass
+                # Start timer
+                start_timer = pygame.time.get_ticks()
+                self.game_manager.handle_game_start(start_timer, True) 
             if self.view_rules.is_clicked(event):
                 # TODO: Handle view rules action
                 pass

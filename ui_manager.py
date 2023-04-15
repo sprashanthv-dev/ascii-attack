@@ -1,3 +1,4 @@
+# TODO: Change to singleton
 class UIManager:
   def get_welcome_screen_button_params(self, width: int, height: int):
 
