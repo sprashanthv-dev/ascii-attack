@@ -3,3 +3,4 @@ Ascii Attack is a 2D game developed in Python using pygame library as a final se
 
 # Icons Credits
 Game icon on toolbar - <a href="https://www.flaticon.com/free-icons/math" title="math icons">Math icons created by Freepik - Flaticon</a>
+Block icons - <a href="https://www.flaticon.com/free-icons/alphabet" title="alphabet icons">Alphabet icons created by Freepik - Flaticon</a>

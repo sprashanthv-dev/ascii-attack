@@ -8,12 +8,23 @@ from ui_manager import UIManager
 class LevelManager(metaclass=Singleton):
     def __init__(self, game_manager):
         self.__level_number = 0
+        
+        # TODO: Get from game manager
+        self.__high_score = 0
+        
+        # TODO: Get from block manager
         self.__blocks_left = 0
+        
+        # Static value of 3 for now
+        # TODO: Change this based on current level number
         self.__misses_left = 0
-        self.__text_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 32)
+        
+        self.__text_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 20)
         
         self.__ui_manager = UIManager(game_manager)
         self.__game_manager = game_manager
+        
+        self.__score_calculator = self.game_manager.score_calculator
         
     @property
     def level_number(self):
@@ -28,12 +39,20 @@ class LevelManager(metaclass=Singleton):
         return self.__misses_left
     
     @property
+    def high_score(self):
+        return self.__high_score
+    
+    @property
     def text_font(self):
         return self.__text_font
     
     @property
     def ui_manager(self):
         return self.__ui_manager
+    
+    @property
+    def score_calculator(self):
+        return self.__score_calculator
     
     @property
     def game_manager(self):
@@ -57,6 +76,10 @@ class LevelManager(metaclass=Singleton):
         self.setup_level_ui()
 
     def setup_level_ui(self):
+        x_coord = 825
+        y_coord = 50
+        y_offset = 150
+        
         while not self.game_manager.game_over:
             
             for event in pygame.event.get():
@@ -71,8 +94,25 @@ class LevelManager(metaclass=Singleton):
                 self.game_manager.screen.fill((0, 0, 0))
 
                 # Display Level number
-                self.ui_manager.render_font(self.text_font, 890, 50, "Level: " + str(self.level_number))
+                self.ui_manager.render_font(self.text_font, x_coord, y_coord, "Level: " + str(self.level_number))
                 
+                # Display Current Score
+                current_score = self.score_calculator.score
+                y_pos = y_coord + y_offset
+                self.ui_manager.render_font(self.text_font, x_coord, y_pos, "Score: " + str(current_score))
+                
+                # Display Blocks Left
+                y_pos = y_pos + y_offset
+                self.ui_manager.render_font(self.text_font, x_coord, y_pos, "Blocks Left: " + str(self.blocks_left))
+                
+                # Display Allowed Misses
+                y_pos = y_pos + y_offset
+                self.ui_manager.render_font(self.text_font, x_coord, y_pos, "Misses Left: " + str(self.misses_left))
+                
+                # Display High Score
+                y_pos = y_pos + y_offset
+                self.ui_manager.render_font(self.text_font, x_coord, y_pos, "High Score: " + str(self.high_score))
+
                 # Update the display
                 pygame.display.update()
         

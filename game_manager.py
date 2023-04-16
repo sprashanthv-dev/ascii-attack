@@ -4,10 +4,12 @@
 
 import pygame
 
-from level_manager import LevelManager
 from singleton import Singleton
+
+from level_manager import LevelManager
 from ui_manager import UIManager
 from welcome_screen import WelcomeScreen
+from score_calculator import ScoreCalculator
 
 class GameManager(metaclass=Singleton):
     def __init__(self) -> None:
@@ -22,8 +24,11 @@ class GameManager(metaclass=Singleton):
 
         self.__screen = None
 
+        # Store references to other class 
+        # instances for easy access
         self.__level_manager = None
         self.__ui_manager = None
+        self.__score_calculator = None
 
         self.__setup()
         self.start()
@@ -56,6 +61,10 @@ class GameManager(metaclass=Singleton):
     @property
     def ui_manager(self):
         return self.__ui_manager
+    
+    @property
+    def score_calculator(self):
+        return self.__score_calculator
 
     @property
     def title(self):
@@ -79,13 +88,18 @@ class GameManager(metaclass=Singleton):
     @ui_manager.setter
     def ui_manager(self, value: UIManager):
         self.__ui_manager = value
+        
+    @score_calculator.setter
+    def score_calculator(self, value: ScoreCalculator):
+        self.__score_calculator = value
 
     def __setup(self):
 
         # Initialize pygame library
         pygame.init()
 
-        # Initialize Level Manager and UI Manager
+        # Initialize Level, UI Manager and Score Calculator
+        self.score_calculator = ScoreCalculator()
         self.level_manager = LevelManager(self)
         self.ui_manager = UIManager(self)
 
