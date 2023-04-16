@@ -1,5 +1,6 @@
-# TODO: Change to singleton
-class UIManager:
+from singleton import Singleton
+
+class UIManager(metaclass=Singleton):
   def get_welcome_screen_button_params(self, width: int, height: int):
 
     button_params = {

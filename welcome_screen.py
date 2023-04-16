@@ -6,17 +6,26 @@ from pygame.locals import *
 class WelcomeScreen:
     counter : int = 0
     
-    def __init__(self, game_manager, ui_manager):   
+    def __init__(self, game_manager):   
         
-        self.initialize_attributes(game_manager)
-        self.add_background()         
-        self.game_manager.play_background_music()
+        self.__game_manager = game_manager
+        self.__ui_manager = self.game_manager.ui_manager
         
-        self.initialize_buttons(ui_manager)
+        self.initialize_attributes()
+        self.add_background()   
               
-    def initialize_attributes(self, game_manager):
-        self.game_manager = game_manager
+        self.game_manager.play_background_music()
+        self.initialize_buttons()
         
+    @property
+    def game_manager(self):
+        return self.__game_manager
+    
+    @property
+    def ui_manager(self):
+        return self.__ui_manager
+              
+    def initialize_attributes(self):        
         self.screen = self.game_manager.screen
         self.title = self.game_manager.title
         self.width = self.game_manager.width
@@ -29,8 +38,12 @@ class WelcomeScreen:
         self.background_image = pygame.transform.scale(
             self.background_image, (self.width, self.height))
         
-    def initialize_buttons(self, ui_manager):
-        button_params = ui_manager.get_welcome_screen_button_params(self.width, self.height);
+    def initialize_buttons(self):
+        
+        button_params = self.ui_manager \
+            .get_welcome_screen_button_params(
+                self.width, self.height
+            );
                 
         self.start_game = Button(self.screen, "New Game", button_params["x"], button_params["y"])
         self.view_rules = Button(self.screen, "Rules", button_params["x"], button_params["y"] + button_params["spacing"])

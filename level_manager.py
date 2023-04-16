@@ -1,4 +1,6 @@
-class LevelManager:
+from singleton import Singleton
+
+class LevelManager(metaclass=Singleton):
     def __init__(self):
         self.level = 0
         self.blocks_left = 0

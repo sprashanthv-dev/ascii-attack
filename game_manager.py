@@ -5,14 +5,12 @@
 import pygame
 
 from level_manager import LevelManager
+from singleton import Singleton
 from ui_manager import UIManager
 from welcome_screen import WelcomeScreen
 
-# TODO: Change this to a singleton
-
-
-class GameManager:
-    def __init__(self, level_manager: LevelManager, ui_manager: UIManager) -> None:
+class GameManager(metaclass=Singleton):
+    def __init__(self) -> None:
 
         # Assign to self object
         self.__game_over = False
@@ -23,8 +21,9 @@ class GameManager:
         self.__title = "Ascii Attack"
 
         self.__screen = None
-        self.__level_manager = level_manager
-        self.__ui_manager = ui_manager
+        
+        self.__level_manager = LevelManager()        
+        self.__ui_manager = UIManager()
 
         self.__setup()
         self.start()
@@ -124,7 +123,7 @@ class GameManager:
             # Reference : https://stackoverflow.com/questions/
             # 18839039/how-to-wait-some-time-in-pygame
             if current_time - start_timer >= delay_timer:
-                welcome_screen = WelcomeScreen(self, self.ui_manager)
+                welcome_screen = WelcomeScreen(self)
 
                 welcome_screen.draw()
                 welcome_screen.handle_interactions()
