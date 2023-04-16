@@ -25,8 +25,8 @@ class UIManager(metaclass=Singleton):
 
     return button_params
 
-  def render_font(self, font: pygame.font.Font, x_coord: int, y_coord: int, text: str):
-    font_properties = font.render(text, True, (255, 255, 255))
+  def render_font(self, font: pygame.font.Font, x_coord: int, y_coord: int, text: str, color = (255,255,255)):
+    font_properties = font.render(text, True, color)
 
     # Render title on the screen
     self.game_manager.screen.blit(font_properties, (x_coord, y_coord))

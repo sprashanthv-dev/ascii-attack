@@ -71,7 +71,7 @@ class LevelManager(metaclass=Singleton):
                 self.game_manager.screen.fill((0, 0, 0))
 
                 # Display Level number
-                self.ui_manager.render_font(self.text_font, 860, 50, "Level: " + str(self.level_number))
+                self.ui_manager.render_font(self.text_font, 890, 50, "Level: " + str(self.level_number))
                 
                 # Update the display
                 pygame.display.update()

@@ -21,10 +21,10 @@ class GameManager(metaclass=Singleton):
         self.__title = "Ascii Attack"
 
         self.__screen = None
-        
-        self.__level_manager = None     
+
+        self.__level_manager = None
         self.__ui_manager = None
-        
+
         self.__setup()
         self.start()
 
@@ -71,26 +71,23 @@ class GameManager(metaclass=Singleton):
     @game_started.setter
     def game_started(self, value: bool):
         self.__game_started = value
-        
+
     @level_manager.setter
     def level_manager(self, value: LevelManager):
         self.__level_manager = value
-        
+
     @ui_manager.setter
     def ui_manager(self, value: UIManager):
         self.__ui_manager = value
-    
+
     def __setup(self):
 
         # Initialize pygame library
         pygame.init()
-        
+
         # Initialize Level Manager and UI Manager
         self.level_manager = LevelManager(self)
         self.ui_manager = UIManager(self)
-
-        # Add background music in loop
-        self.play_background_music()
 
         # Create the game window
         screen = pygame.display.set_mode((self.width, self.height))
@@ -114,7 +111,7 @@ class GameManager(metaclass=Singleton):
 
         # Time to delay in milliseconds
         delay_timer = 4000
-
+        
         while not self.game_over:
 
             self.show_loading_screen()
@@ -146,42 +143,14 @@ class GameManager(metaclass=Singleton):
 
         # Change background color
         self.screen.fill((11, 36, 71))
-
-        # TODO : Refactor this to a method
+        
         # Set Title Text and position
         title_font = pygame.font.Font('./assets/fonts/SuperMario256.ttf', 96)
-
-        title_x = 150
-        title_y = 260
-        title_text = self.title.upper()
-
-        title = title_font.render(title_text, True, (255, 201, 60))
-
-        # Render loading text on the screen
-        self.screen.blit(title, (title_x, title_y))
+        self.ui_manager.render_font(title_font, 150, 260, self.title.upper(), (255, 201, 60))
 
         # Set Loading Text and position
         loader_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 32)
-
-        loader_x = 420
-        loader_y = 380
-        loader_text = "Loading ..."
-
-        loader = loader_font.render(loader_text, True, (255, 255, 255))
-
-        # Render title on the screen
-        self.screen.blit(loader, (loader_x, loader_y))
-
-    def play_background_music(self):
-        # Load the background music file
-        # pygame.mixer.music.load('./assets/sounds/in_game.mp3')
-
-        # # Set the volume of the background music
-        # pygame.mixer.music.set_volume(0.5)
-
-        # # Play the background music on loop
-        # pygame.mixer.music.play(-1)
-        pass
+        self.ui_manager.render_font(loader_font, 420, 380, "Loading ...")
 
     def handle_game_start(self, start_timer: int, value: bool):
         self.game_started = value
@@ -200,16 +169,16 @@ class GameManager(metaclass=Singleton):
                 current_timer = pygame.time.get_ticks()
                 time_difference = current_timer - start_timer
 
-                # Keep updating the display until 
+                # Keep updating the display until
                 # the delay has not expired
                 if time_difference <= delay_timer:
                     pygame.display.update()
-                    
+
                 # Once the delay has expired
                 # end the while loop
                 if time_difference > delay_timer:
                     delay_done = True
-                    
+
             # Load the level
             self.level_manager.load_level()
 

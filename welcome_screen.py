@@ -2,7 +2,7 @@ import pygame
 from button import Button
 from pygame.locals import *
 
-# TODO: Change to singleton
+# TODO : Add background music in loop
 class WelcomeScreen:
     counter : int = 0
     
@@ -12,9 +12,7 @@ class WelcomeScreen:
         self.__ui_manager = self.game_manager.ui_manager
         
         self.initialize_attributes()
-        self.add_background()   
-              
-        self.game_manager.play_background_music()
+        self.add_background()           
         self.initialize_buttons()
         
     @property
@@ -51,7 +49,7 @@ class WelcomeScreen:
         self.quit_game = Button(self.screen, "Quit", button_params["x"], button_params["y"] + 3 * button_params["spacing"])
 
     # TODO: Observer pattern implementation here ??
-    def handle_interactions(self):
+    def handle_interactions(self):   
         for event in pygame.event.get():
             
             # If the player clicks on cross icon in toolbar
@@ -68,13 +66,12 @@ class WelcomeScreen:
             if self.view_leaderboard.is_clicked(event):
                 # TODO: Handle view leaderboard action
                 pass
-
+                      
     def draw(self):
         self.screen.blit(self.background_image, (0, 0))
         
         title_font = pygame.font.Font("./assets/fonts/SuperMario256.ttf", 96)
-        title_text = title_font.render(self.title, True, (255, 201, 60))
-        self.screen.blit(title_text, (150, 180))
+        self.ui_manager.render_font(title_font, 150, 180, self.title, (255, 201, 60))
         
         self.start_game.apply_hover_effect()
         self.view_rules.apply_hover_effect()
