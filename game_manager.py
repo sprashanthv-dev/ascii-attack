@@ -8,6 +8,8 @@ from singleton import Singleton
 
 from level_manager import LevelManager
 from ui_manager import UIManager
+from block_manager import BlockManager
+
 from welcome_screen import WelcomeScreen
 from score_calculator import ScoreCalculator
 
@@ -29,6 +31,7 @@ class GameManager(metaclass=Singleton):
         self.__level_manager = None
         self.__ui_manager = None
         self.__score_calculator = None
+        self.__block_manager = None
 
         self.__setup()
         self.start()
@@ -65,6 +68,10 @@ class GameManager(metaclass=Singleton):
     @property
     def score_calculator(self):
         return self.__score_calculator
+    
+    @property
+    def block_manager(self):
+        return self.__block_manager
 
     @property
     def title(self):
@@ -92,14 +99,19 @@ class GameManager(metaclass=Singleton):
     @score_calculator.setter
     def score_calculator(self, value: ScoreCalculator):
         self.__score_calculator = value
+        
+    @block_manager.setter
+    def block_manager(self, value: BlockManager):
+        self.__block_manager = value
 
     def __setup(self):
 
         # Initialize pygame library
         pygame.init()
 
-        # Initialize Level, UI Manager and Score Calculator
+        # Initialize the required classes
         self.score_calculator = ScoreCalculator()
+        self.block_manager = BlockManager()
         self.level_manager = LevelManager(self)
         self.ui_manager = UIManager(self)
 
@@ -124,7 +136,7 @@ class GameManager(metaclass=Singleton):
         start_timer = pygame.time.get_ticks()
 
         # Time to delay in milliseconds
-        delay_timer = 1000
+        delay_timer = 3000
         
         while not self.game_over:
 

@@ -57,3 +57,33 @@ class UIManager(metaclass=Singleton):
             surface.blit(line_surface, (rect.left, y))
             y += line_height
   
+  def render_main_screen_ui(self, level_manager):
+    x_coord = 825
+    y_coord = 50
+    y_offset = 150
+    
+    font = level_manager.text_font
+    
+    # Display Level number
+    level_number = level_manager.level_number
+    self.render_font(font, x_coord, y_coord, "Level: " + str(level_number))
+    
+    # Display Current Score
+    current_score = level_manager.score_calculator.score
+    y_pos = y_coord + y_offset
+    self.render_font(font, x_coord, y_pos, "Score: " + str(current_score))
+    
+    # Display Blocks Left
+    y_pos = y_pos + y_offset
+    blocks_left = level_manager.blocks_left
+    self.render_font(font, x_coord, y_pos, "Blocks Left: " + str(blocks_left))
+    
+    # Display Allowed Misses
+    y_pos = y_pos + y_offset
+    misses_left = level_manager.misses_left
+    self.render_font(font, x_coord, y_pos, "Misses Left: " + str(misses_left))
+    
+    # Display High Score
+    y_pos = y_pos + y_offset
+    high_score = level_manager.high_score
+    self.render_font(font, x_coord, y_pos, "High Score: " + str(high_score))

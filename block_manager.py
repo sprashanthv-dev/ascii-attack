@@ -1,6 +1,9 @@
-from block import Block
+import pygame
+import random
 
-class BlockManager:
+from singleton import Singleton
+from block import Block
+class BlockManager(metaclass=Singleton):
   def __init__(self):
     self.__block = None
     
@@ -13,8 +16,23 @@ class BlockManager:
     self.__block = value
     
   # Create a block and return it
-  def create_block(self):
-    pass
+  def create_block(self) -> Block:
+    block = Block()
+    
+    # TODO: Change this based on current level number
+    x_limit = 800
+    y_limit = 100
+    y_speed = 0.03
+    
+    # TODO : Change the image path to include a 
+    # TODO: random number between 0 to 38 inclusive
+    block.sprite = pygame.image.load('./assets/img/blocks/12.png')
+    block.x_pos = random.randint(0, x_limit)
+    block.y_pos = random.randint(70, y_limit)
+    block.speed = y_speed
+    
+    return block
+    
   
   # Spawns blocks at regular intervals
   def spawn_block(self):

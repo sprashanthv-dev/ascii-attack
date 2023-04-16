@@ -3,75 +3,81 @@ import pygame
 
 class Block:
   def __init__(self):
-    self.sprite = None
-    self.x_pos = 0
-    self.y_pos = 0
-    self.speed = 0
-    self.hits_left = 1
-    self.point = 1
-    self.special_block = False
-    self.touching_ground = False
+    self.__sprite = None
+    self.__x_pos = 0
+    self.__y_pos = 0
+    self.__speed = 0
+    self.__hits_left = 1
+    self.__point = 1
+    self.__special_block = False
+    self.__touching_ground = False
 
   @property
   def sprite(self):
-    return self.sprite
+    return self.__sprite
 
   @property
   def x_pos(self):
-    return self.x_pos
+    return self.__x_pos
 
   @property
   def y_pos(self):
-    return self.y_pos
+    return self.__y_pos
 
   @property
   def speed(self):
-    return self.speed
+    return self.__speed
 
   @property
   def hits_left(self):
-    return self.hits_left
+    return self.__hits_left
 
   @property
   def point(self):
-    return self.point
+    return self.__point
 
   @property
   def special_block(self):
-    return self.special_block
+    return self.__special_block
 
   @property
   def touching_ground(self):
-    return self.touching_ground
+    return self.__touching_ground
 
   @sprite.setter
   def sprite(self, value: pygame.surface.Surface):
-    self.sprite = value
+    self.__sprite = value
 
   @x_pos.setter
   def x_pos(self, value: int):
-    self.x_pos = value
-    
+    self.__x_pos = value
+
   @y_pos.setter
   def y_pos(self, value: int):
-    self.y_pos = value
-    
+    self.__y_pos = value
+
   @speed.setter
   def speed(self, value: int):
-    self.speed = value
-    
+    self.__speed = value
+
   @hits_left.setter
   def hits_left(self, value: int):
-    self.hits_left = value
-    
+    self.__hits_left = value
+
   @point.setter
   def point(self, value: int):
-    self.point = value
-    
+    self.__point = value
+
   @special_block.setter
   def special_block(self, value: bool):
-    self.special_block = value
-    
+    self.__special_block = value
+
   @touching_ground.setter
   def touching_ground(self, value: bool):
-    self.touching_ground = value 
+    self.__touching_ground = value
+
+  def __repr__(self):
+      return f"{self.__class__.__name__} (\
+          {self.sprite}, {self.x_pos}, {self.y_pos} \
+          {self.speed}, {self.hits_left}, {self.point}\
+          {self.touching_ground}, {self.special_block})"
