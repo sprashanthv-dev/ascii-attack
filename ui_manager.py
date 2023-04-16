@@ -30,3 +30,30 @@ class UIManager(metaclass=Singleton):
 
     # Render title on the screen
     self.game_manager.screen.blit(font_properties, (x_coord, y_coord))
+    
+  def render_paragraph(self, text, font, rect, surface, color):
+        # Split text into lines
+        lines = text.split("\n")
+        
+        # Create a list to hold the rendered line surfaces
+        line_surfaces = []
+        
+        # Render each line of text and add the surface to the list
+        for line in lines:
+            line_surface = font.render(line, True, color)
+            line_surfaces.append(line_surface)
+        
+        # Calculate the height of each line surface
+        line_height = font.size("Tg")[1]
+        
+        # Calculate the total height of the rendered paragraph
+        total_height = line_height * len(lines)
+        
+        # Calculate the y-coordinate for the top left corner of the first line surface
+        y = rect.top + (rect.height - total_height) // 2
+        
+        # Render each line surface onto the given surface at the appropriate y-coordinate
+        for line_surface in line_surfaces:
+            surface.blit(line_surface, (rect.left, y))
+            y += line_height
+  

@@ -124,7 +124,7 @@ class GameManager(metaclass=Singleton):
         start_timer = pygame.time.get_ticks()
 
         # Time to delay in milliseconds
-        delay_timer = 4000
+        delay_timer = 1000
         
         while not self.game_over:
 
@@ -198,7 +198,11 @@ class GameManager(metaclass=Singleton):
 
     def handle_quit_game(self):
         pygame.quit()
-
+        
+    def handle_view_rules(self, value: bool):
+        # Load the view rules page
+        self.level_manager.load_view_rules()
+            
     def update_display(self):
         if not self.game_over:
             # Update the display continuously

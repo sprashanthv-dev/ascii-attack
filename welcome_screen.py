@@ -30,7 +30,7 @@ class WelcomeScreen:
         self.height = self.game_manager.height
         
     def add_background(self):
-        self.background_image = pygame.image.load("./assets/img/main_menu2.png")
+        self.background_image = pygame.image.load("./assets/img/main_menu3.png")
         
         # ? What does this statement do
         self.background_image = pygame.transform.scale(
@@ -47,7 +47,7 @@ class WelcomeScreen:
         self.view_rules = Button(self.screen, "Rules", button_params["x"], button_params["y"] + button_params["spacing"])
         self.view_leaderboard = Button(self.screen, "Leaderboard", button_params["x"], button_params["y"] + 2 * button_params["spacing"])
         self.quit_game = Button(self.screen, "Quit", button_params["x"], button_params["y"] + 3 * button_params["spacing"])
-
+        
     # TODO: Observer pattern implementation here ??
     def handle_interactions(self):   
         for event in pygame.event.get():
@@ -61,7 +61,9 @@ class WelcomeScreen:
                 start_timer = pygame.time.get_ticks()
                 self.game_manager.handle_game_start(start_timer, True) 
             if self.view_rules.is_clicked(event):
-                # TODO: Handle view rules action
+                # Start timer
+                # start_timer = pygame.time.get_ticks()
+                self.game_manager.handle_view_rules(True)
                 pass
             if self.view_leaderboard.is_clicked(event):
                 # TODO: Handle view leaderboard action
