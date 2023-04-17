@@ -32,6 +32,7 @@ class GameManager(metaclass=Singleton):
         self.__ui_manager = None
         self.__score_calculator = None
         self.__block_manager = None
+        self.__welcome_screen = None
 
         self.__setup()
         self.start()
@@ -77,6 +78,10 @@ class GameManager(metaclass=Singleton):
     def title(self):
         return self.__title
 
+    @property
+    def welcome_screen(self):
+        return self.__welcome_screen
+    
     # Allow game over attribute
     # to be changed through setter
     @game_over.setter
@@ -103,6 +108,10 @@ class GameManager(metaclass=Singleton):
     @block_manager.setter
     def block_manager(self, value: BlockManager):
         self.__block_manager = value
+        
+    @welcome_screen.setter
+    def welcome_screen(self, value: WelcomeScreen):
+        self.__welcome_screen = value
 
     def __setup(self):
 

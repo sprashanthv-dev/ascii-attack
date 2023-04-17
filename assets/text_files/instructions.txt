@@ -1,0 +1,16 @@
+1. The objective of the game is to clear falling letter and number blocks by pressing the corresponding keys on your keyboard.\n
+2. To navigate around the main screen, simply use your mouse to click on the buttons for Start Game, Rules, High Scores, 
+   and Quit.\n
+3. The right side in the game screen displays your current score, level, number of blocks left, and the number of blocks that 
+   can be missed before you lose.\n
+4. Blocks fall at random positions from the top of the screen and their frequency and speed increase with higher levels.\n
+5. If you clear a block, your score increases and the number of blocks left in the level decreases accordingly.\n
+6. If you miss a block, the number of blocks you can miss in the current level decreases and if it reaches zero, the game ends.\n
+7. Special blocks require more than one keystroke and offer additional point bonuses.\n
+8. The game ends when you miss the allowed number of blocks or when you complete all levels.\n
+9. The game over screen displays your final score and offers the option to restart or quit.\n
+10. You can view the rules and controls of the game, start a new game, restart the current game, view the leaderboard, 
+    and quit the game from the main menu.\n
+11. You will not be able to beat the game by spamming your keyboard, we have got that covered.\n
+
+Enjoy playing ASCII Attack and try to beat the high scores on the leaderboard!
