@@ -10,6 +10,7 @@ from level_manager import LevelManager
 from ui_manager import UIManager
 from block_manager import BlockManager
 
+from view_rules import ViewRules
 from welcome_screen import WelcomeScreen
 from score_calculator import ScoreCalculator
 
@@ -220,10 +221,11 @@ class GameManager(metaclass=Singleton):
     def handle_quit_game(self):
         pygame.quit()
         
-    def handle_view_rules(self, value: bool):
+    def handle_view_rules(self):
         # Load the view rules page
-        self.level_manager.load_view_rules()
-            
+        rules = ViewRules(self)
+        rules.setup_view_rules_ui()
+        
     def update_display(self):
         if not self.game_over:
             # Update the display continuously

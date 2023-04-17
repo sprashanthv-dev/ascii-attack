@@ -62,9 +62,7 @@ class WelcomeScreen:
                 self.game_manager.handle_game_start(start_timer, True) 
             if self.view_rules.is_clicked(event):
                 # Start timer
-                # start_timer = pygame.time.get_ticks()
-                self.game_manager.handle_view_rules(True)
-                pass
+                self.game_manager.handle_view_rules()
             if self.view_leaderboard.is_clicked(event):
                 # TODO: Handle view leaderboard action
                 pass
