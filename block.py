@@ -1,6 +1,5 @@
 import pygame
 
-
 class Block:
   def __init__(self):
     self.__sprite = None
@@ -76,8 +75,8 @@ class Block:
   def touching_ground(self, value: bool):
     self.__touching_ground = value
 
-  def __repr__(self):
-      return f"{self.__class__.__name__} (\
-          {self.sprite}, {self.x_pos}, {self.y_pos} \
-          {self.speed}, {self.hits_left}, {self.point}\
-          {self.touching_ground}, {self.special_block})"
+  # def __repr__(self):
+  #     return f"{self.__class__.__name__} (\
+  #         {self.sprite}, {self.x_pos}, {self.y_pos} \
+  #         {self.speed}, {self.hits_left}, {self.point}\
+  #         {self.touching_ground}, {self.special_block})"

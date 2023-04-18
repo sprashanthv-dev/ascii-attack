@@ -6,10 +6,20 @@ from block import Block
 class BlockManager(metaclass=Singleton):
   def __init__(self):
     self.__block = None
+    self.__blocks_x = []
+    self.__blocks_y = []
     
   @property
   def block(self):
     return self.__block
+  
+  @property
+  def blocks_x(self):
+    return self.__blocks_x
+  
+  @property
+  def blocks_y(self):
+    return self.__blocks_y
   
   @block.setter
   def block(self, value: Block):
@@ -20,7 +30,7 @@ class BlockManager(metaclass=Singleton):
     block = Block()
     
     # TODO: Change this based on current level number
-    x_limit = 800
+    x_limit = 736
     y_limit = 100
     y_speed = 0.03
     
@@ -30,6 +40,9 @@ class BlockManager(metaclass=Singleton):
     block.x_pos = random.randint(0, x_limit)
     block.y_pos = random.randint(70, y_limit)
     block.speed = y_speed
+    
+    self.blocks_x.append(block.x_pos)
+    self.blocks_y.append(block.y_pos)
     
     return block
     

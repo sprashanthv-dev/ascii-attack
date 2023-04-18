@@ -226,6 +226,9 @@ class GameManager(metaclass=Singleton):
         rules = ViewRules(self)
         rules.setup_view_rules_ui()
         
+    def has_timer_expired(self, start, current, delay) -> bool:
+        return current - start >= delay
+        
     def update_display(self):
         if not self.game_over:
             # Update the display continuously

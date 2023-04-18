@@ -5,6 +5,7 @@ from ui_manager import UIManager
 
 # TODO: Notify classes using game_over property when it is updated
 # TODO : Check circular import issue with GameManager
+
 class LevelManager(metaclass=Singleton):
     def __init__(self, game_manager):
         self.__level_number = 0
@@ -17,12 +18,17 @@ class LevelManager(metaclass=Singleton):
 
         # Static value of 3 for now
         # TODO: Change this based on current level number
+        # TODO: Higher the level, lesser is the total misses
         self.__misses_left = 0
 
         self.__text_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 20)
 
         self.__ui_manager = UIManager(game_manager)
         self.__game_manager = game_manager
+
+        # TODO: Change this based on current level number
+        # TODO: Higher the level, higher the total blocks
+        self.__total_blocks = 10
 
         self.__score_calculator = self.game_manager.score_calculator
         self.__block_manager = self.game_manager.block_manager
@@ -91,12 +97,30 @@ class LevelManager(metaclass=Singleton):
 
     def setup_level_ui(self):
         block_created = False
+        
+        # TODO: Reset for each new level
+        blocks_spawned = 0
+
+        # TODO: Reset blocks_x, blocks_y at start of each level
+        # TODO : A level ends when blocks spawned == total blocks in that level
+        # TODO : Destroy the block that the player fails to clear
+        # TODO: Track each block's movement and move it until it hits
+        #       the ground or is cleared by the player
+
+        # Start timer
+        start_timer = pygame.time.get_ticks()
+
+        # Time to delay in milliseconds
+        delay_timer = 3000
+
         while not self.game_manager.game_over:
             for event in pygame.event.get():
                 # If the player clicks on cross icon in toolbar
                 # Or if the player clicks on the quit button
                 if event.type == pygame.QUIT:
                     self.game_manager.game_over = True
+
+            current_timer = pygame.time.get_ticks()
 
             if not self.game_manager.game_over:
                 # Change background color
@@ -105,17 +129,28 @@ class LevelManager(metaclass=Singleton):
                 # Display main screen ui
                 self.ui_manager.render_main_screen_ui(self)
 
-                # TODO: Introduce delay to aid block creation
-                # not block_created or time has elapsed
-                # If a block has not already been created
-                if not block_created:
+                # Create a block if a block has already not been
+                # created or if the specified interval of time
+                # has elapsed since a block has been instantiated
+                if not block_created or self.game_manager.has_timer_expired(
+                        start_timer,
+                        current_timer,
+                        delay_timer):
                     block = self.block_manager.create_block()
+                    blocks_spawned += 1
                     block_created = True
 
+                    # Reference: https://stackoverflow.com/questions/20023709/resetting-pygames-timer
+                    # Advance start to current time to enable
+                    # creation of the next block
+                    start_timer = current_timer
+
                 if block_created:
-                    self.game_manager.screen.blit(
-                        block.sprite, (block.x_pos, block.y_pos))
-                    block.y_pos += block.speed
+                    self.game_manager.screen.blit(block.sprite, (
+                        self.block_manager.blocks_x[blocks_spawned - 1], 
+                        self.block_manager.blocks_y[blocks_spawned - 1]))
+                    
+                    self.block_manager.blocks_y[blocks_spawned - 1] += block.speed
 
                 # Update the display
                 pygame.display.update()
@@ -127,4 +162,3 @@ class LevelManager(metaclass=Singleton):
     def handle_missed_block(self):
         # Placeholder for handling missed block logic
         pass
-                
