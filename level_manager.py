@@ -6,6 +6,7 @@ from ui_manager import UIManager
 # TODO: Notify classes using game_over property when it is updated
 # TODO : Check circular import issue with GameManager
 
+
 class LevelManager(metaclass=Singleton):
     def __init__(self, game_manager):
         self.__level_number = 0
@@ -97,7 +98,7 @@ class LevelManager(metaclass=Singleton):
 
     def setup_level_ui(self):
         block_created = False
-        
+
         # TODO: Reset for each new level
         blocks_spawned = 0
 
@@ -146,11 +147,15 @@ class LevelManager(metaclass=Singleton):
                     start_timer = current_timer
 
                 if block_created:
-                    self.game_manager.screen.blit(block.sprite, (
-                        self.block_manager.blocks_x[blocks_spawned - 1], 
-                        self.block_manager.blocks_y[blocks_spawned - 1]))
-                    
-                    self.block_manager.blocks_y[blocks_spawned - 1] += block.speed
+
+                    for block in self.block_manager.blocks:
+                        
+                        self.game_manager.screen.blit(
+                            block.sprite,
+                            (block.x_pos, block.y_pos)
+                        )
+                        
+                        block.y_pos += block.speed
 
                 # Update the display
                 pygame.display.update()

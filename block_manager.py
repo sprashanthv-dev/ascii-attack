@@ -6,20 +6,15 @@ from block import Block
 class BlockManager(metaclass=Singleton):
   def __init__(self):
     self.__block = None
-    self.__blocks_x = []
-    self.__blocks_y = []
+    self.__blocks = []
     
   @property
   def block(self):
     return self.__block
   
   @property
-  def blocks_x(self):
-    return self.__blocks_x
-  
-  @property
-  def blocks_y(self):
-    return self.__blocks_y
+  def blocks(self):
+    return self.__blocks
   
   @block.setter
   def block(self, value: Block):
@@ -41,8 +36,7 @@ class BlockManager(metaclass=Singleton):
     block.y_pos = random.randint(70, y_limit)
     block.speed = y_speed
     
-    self.blocks_x.append(block.x_pos)
-    self.blocks_y.append(block.y_pos)
+    self.blocks.append(block)
     
     return block
     
