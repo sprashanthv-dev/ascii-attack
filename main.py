@@ -7,4 +7,4 @@ from game_manager import GameManager
 game_manager = GameManager()
 
 # Need to check if each block is active or not
-#  if still active then need to increment y_pos of that block
+# if still active then need to increment y_pos of that block

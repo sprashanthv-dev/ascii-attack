@@ -1,6 +1,7 @@
 import pygame
 
 from singleton import Singleton
+from block_manager import BlockManager
 from ui_manager import UIManager
 
 # TODO: Notify classes using game_over property when it is updated
@@ -29,10 +30,13 @@ class LevelManager(metaclass=Singleton):
 
         # TODO: Change this based on current level number
         # TODO: Higher the level, higher the total blocks
-        self.__total_blocks = 10
+        self.__total_blocks = 5
+        self.__spawned_blocks = 0
+
+        self.timer_info = {}
 
         self.__score_calculator = self.game_manager.score_calculator
-        self.__block_manager = self.game_manager.block_manager
+        self.__block_manager: BlockManager = self.game_manager.block_manager
 
     @property
     def level_number(self):
@@ -53,6 +57,14 @@ class LevelManager(metaclass=Singleton):
     @property
     def text_font(self):
         return self.__text_font
+
+    @property
+    def total_blocks(self):
+        return self.__total_blocks
+    
+    @property
+    def spawned_blocks(self):
+        return self.__spawned_blocks
 
     @property
     def ui_manager(self):
@@ -82,6 +94,14 @@ class LevelManager(metaclass=Singleton):
     def misses_left(self, value: int):
         self.__misses_left = value
 
+    @total_blocks.setter
+    def total_blocks(self, value: int):
+        self.__total_blocks = value
+        
+    @spawned_blocks.setter
+    def spawned_blocks(self, value: int):
+        self.__spawned_blocks = value
+
     def load_view_rules(self):
         self.setup_view_rules_ui()
 
@@ -100,7 +120,7 @@ class LevelManager(metaclass=Singleton):
         block_created = False
 
         # TODO: Reset for each new level
-        blocks_spawned = 0
+        self.spawned_blocks = 0
 
         # TODO: Reset blocks_x, blocks_y at start of each level
         # TODO : A level ends when blocks spawned == total blocks in that level
@@ -130,31 +150,43 @@ class LevelManager(metaclass=Singleton):
                 # Display main screen ui
                 self.ui_manager.render_main_screen_ui(self)
 
+                # Configure the timer object
+                self.timer_info = self.configure_timer(
+                    start_timer,
+                    current_timer,
+                    delay_timer)
+
                 # Create a block if a block has already not been
                 # created or if the specified interval of time
                 # has elapsed since a block has been instantiated
-                if not block_created or self.game_manager.has_timer_expired(
-                        start_timer,
-                        current_timer,
-                        delay_timer):
+                if not block_created or self.block_manager.spawn_next_block(
+                        self.timer_info,
+                        self.spawned_blocks,
+                        self.total_blocks):
+
                     block = self.block_manager.create_block()
-                    blocks_spawned += 1
                     block_created = True
+                    
+                    self.spawned_blocks += 1
 
                     # Reference: https://stackoverflow.com/questions/20023709/resetting-pygames-timer
                     # Advance start to current time to enable
                     # creation of the next block
                     start_timer = current_timer
+                    
+                    print(self.spawned_blocks)
 
-                if block_created:
-
+                if block_created and not self.block_manager.block_count_reached(
+                    self.spawned_blocks - 1,
+                    self.total_blocks):
+                    
                     for block in self.block_manager.blocks:
-                        
+
                         self.game_manager.screen.blit(
                             block.sprite,
                             (block.x_pos, block.y_pos)
                         )
-                        
+
                         block.y_pos += block.speed
 
                 # Update the display
@@ -167,3 +199,12 @@ class LevelManager(metaclass=Singleton):
     def handle_missed_block(self):
         # Placeholder for handling missed block logic
         pass
+
+    def configure_timer(self, start_timer, current_timer, delay_timer):
+        self.timer_info = {
+            "start_time": start_timer,
+            "current_time": current_timer,
+            "delay_time": delay_timer
+        }
+
+        return self.timer_info

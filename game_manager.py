@@ -121,7 +121,7 @@ class GameManager(metaclass=Singleton):
 
         # Initialize the required classes
         self.score_calculator = ScoreCalculator()
-        self.block_manager = BlockManager()
+        self.block_manager = BlockManager(self)
         self.level_manager = LevelManager(self)
         self.ui_manager = UIManager(self)
 
