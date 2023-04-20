@@ -4,9 +4,7 @@ from ui_manager import UIManager
 from button import Button
 from typing import List
 
-
 class Score:
-    
     def __init__(self, name, score):
         self.name = name
         self.score = score
@@ -14,7 +12,7 @@ class Score:
 class Leaderboard:
     def __init__(self, game_manager):
         self.file_name = './assets/text_files/highscores.json'
-        self.scores = self.load_scores()
+        self.scores = []
         self.__game_manager = game_manager
         self.__ui_manager = UIManager()
         
@@ -31,15 +29,19 @@ class Leaderboard:
             # Load leaderboard data from JSON file
             scores_json = json.load(f)
             scores = []
+            
             for score in scores_json:
                 scores.append(Score(score['name'], score['score']))
+                
             return scores
 
     def save_scores(self):
         with open(self.file_name, 'w') as f:
             scores_json = []
+            
             for score in self.scores:
                 scores_json.append({'name': score.name, 'score': score.score})
+                
             # Save updated leaderboard data back to JSON file
             json.dump(scores_json, f)
 
@@ -76,7 +78,6 @@ class Leaderboard:
             # Or if the player clicks on the quit button
             if event.type == pygame.QUIT:
                 self.game_manager.game_over = True
-
             elif event.type == pygame.MOUSEBUTTONDOWN and back_button.is_clicked(event):
                 pass
 
@@ -96,13 +97,19 @@ class Leaderboard:
         # Calculate the position of the box
         box_width = 850
         box_height = 500
+        
         box_x = (self.game_manager.screen.get_width() - box_width) // 2
-        box_y = (self.game_manager.screen.get_height() - box_height) // 2
+        box_y = ((self.game_manager.screen.get_height() - box_height) // 2) + 50
 
         # Display "Leaderboard" title
         title_font = pygame.font.Font("./assets/fonts/SuperMario256.ttf", 72)
+        
         self.ui_manager.render_font(
-            title_font, box_x + 50, box_y - 80, "Leaderboard", (255, 201, 60))
+            title_font, 
+            box_x + 175, 
+            box_y - 120, 
+            "Leaderboard", 
+            (255, 201, 60))
 
         # Create a surface for the leaderboard box
         box_surface = pygame.Surface((box_width, box_height))
@@ -113,6 +120,7 @@ class Leaderboard:
         header_font = pygame.font.Font("./assets/fonts/NiceSugar.ttf", 48)
         name_header_text = header_font.render("Name", True, (0, 0, 0))
         score_header_text = header_font.render("Score", True, (0, 0, 0))
+        
         self.game_manager.screen.blit(name_header_text, (box_x + 195, box_y + 35))
         self.game_manager.screen.blit(score_header_text, (box_x + 480, box_y + 35))
 

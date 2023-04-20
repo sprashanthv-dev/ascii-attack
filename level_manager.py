@@ -21,7 +21,7 @@ class LevelManager(metaclass=Singleton):
         # Static value of 3 for now
         # TODO: Change this based on current level number
         # TODO: Higher the level, lesser is the total misses
-        self.__misses_left = 0
+        self.__misses_left = 3
 
         self.__text_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 20)
 
@@ -61,7 +61,7 @@ class LevelManager(metaclass=Singleton):
     @property
     def total_blocks(self):
         return self.__total_blocks
-    
+
     @property
     def spawned_blocks(self):
         return self.__spawned_blocks
@@ -97,7 +97,7 @@ class LevelManager(metaclass=Singleton):
     @total_blocks.setter
     def total_blocks(self, value: int):
         self.__total_blocks = value
-        
+
     @spawned_blocks.setter
     def spawned_blocks(self, value: int):
         self.__spawned_blocks = value
@@ -145,7 +145,7 @@ class LevelManager(metaclass=Singleton):
                 self.game_manager.screen.fill((0, 0, 0))
 
                 # Display main screen ui
-                self.ui_manager.render_main_screen_ui(self)
+                self.ui_manager.render_main_screen_ui(self, self.block_manager)
 
                 # Configure the timer object
                 self.timer_info = self.configure_timer(
@@ -161,30 +161,22 @@ class LevelManager(metaclass=Singleton):
                         self.spawned_blocks,
                         self.total_blocks):
 
-                    block = self.block_manager.create_block()
+                    self.block_manager.create_block()
                     block_created = True
-                    
+
                     self.spawned_blocks += 1
 
                     # Reference: https://stackoverflow.com/questions/20023709/resetting-pygames-timer
-                    # Advance start to current time to enable
-                    # creation of the next block
+                    # Advance start to current time to enable creation of the next block
                     start_timer = current_timer
-                    
-                    print(self.spawned_blocks)
 
+                # If a block has been created and the total spawned blocks
+                # has not reached the allowed blocks for the current level
                 if block_created and not self.block_manager.block_count_reached(
-                    self.spawned_blocks - 1,
-                    self.total_blocks):
-                    
-                    for block in self.block_manager.blocks:
+                        self.spawned_blocks - 1,
+                        self.total_blocks):
 
-                        self.game_manager.screen.blit(
-                            block.sprite,
-                            (block.x_pos, block.y_pos)
-                        )
-
-                        block.y_pos += block.speed
+                    self.ui_manager.render_blocks(self, self.block_manager)
 
                 # Update the display
                 pygame.display.update()

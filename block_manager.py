@@ -8,14 +8,35 @@ class BlockManager(metaclass=Singleton):
     self.__block = None
     self.__game_manager = game_manager
     self.__blocks = []
+    
+    self.__block_x_limit = 825
+    self.__block_y_limit = 700
+    self.__y_start = 50
+    self.__offset = 150
 
   @property
   def block(self):
     return self.__block
-
+  
   @property
   def blocks(self):
     return self.__blocks
+  
+  @property
+  def block_x_limit(self):
+    return self.__block_x_limit
+  
+  @property
+  def block_y_limit(self):
+    return self.__block_y_limit
+  
+  @property
+  def y_start(self):
+    return self.__y_start
+  
+  @property
+  def offset(self):
+    return self.__offset
 
   @property
   def game_manager(self):
@@ -77,3 +98,9 @@ class BlockManager(metaclass=Singleton):
   
   def block_count_reached(self, spawned_blocks: int, total_blocks: int) -> bool:
     return True if spawned_blocks == total_blocks else False
+  
+  def can_block_move(self, block : Block) -> bool:
+    return block.y_pos < self.block_y_limit
+  
+  def is_touching_ground(self, block: Block) -> bool:
+    return block.y_pos >= self.block_y_limit
