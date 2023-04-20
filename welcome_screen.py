@@ -61,11 +61,9 @@ class WelcomeScreen:
                 start_timer = pygame.time.get_ticks()
                 self.game_manager.handle_game_start(start_timer, True) 
             if self.view_rules.is_clicked(event):
-                # Start timer
                 self.game_manager.handle_view_rules()
             if self.view_leaderboard.is_clicked(event):
-                # TODO: Handle view leaderboard action
-                pass
+                self.game_manager.handle_view_leaderboard()
                       
     def draw(self):
         self.screen.blit(self.background_image, (0, 0))

@@ -1,3 +1,5 @@
+from leaderboard import Score
+
 class ScoreCalculator:
   def __init__(self):
     self.__score = 0

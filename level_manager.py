@@ -102,9 +102,6 @@ class LevelManager(metaclass=Singleton):
     def spawned_blocks(self, value: int):
         self.__spawned_blocks = value
 
-    def load_view_rules(self):
-        self.setup_view_rules_ui()
-
     def load_level(self):
         # Increment level number
         self.level_number += 1

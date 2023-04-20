@@ -13,6 +13,7 @@ from block_manager import BlockManager
 from view_rules import ViewRules
 from welcome_screen import WelcomeScreen
 from score_calculator import ScoreCalculator
+from leaderboard import Leaderboard
 
 class GameManager(metaclass=Singleton):
     def __init__(self) -> None:
@@ -226,6 +227,12 @@ class GameManager(metaclass=Singleton):
         rules = ViewRules(self)
         rules.setup_view_rules_ui()
         
+    def handle_view_leaderboard(self):
+        # Load the view rules page
+        leaderboard = Leaderboard(self)
+        leaderboard.setup_view_leaderboard_ui()
+        
+    
     def has_timer_expired(self, start, current, delay) -> bool:
         return current - start >= delay
         

@@ -17,7 +17,7 @@ class ViewRules:
     return self.__ui_manager
   
   def setup_view_rules_ui(self):
-
+    
       # Load instructions text from file
       instructions_text = self.load_instructions()
 
