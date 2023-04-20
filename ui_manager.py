@@ -6,11 +6,20 @@ class UIManager(metaclass=Singleton):
   
   def __init__(self, game_manager):
     self.__game_manager = game_manager
+    self.__missed_count = 0
     
   @property
   def game_manager(self):
     return self.__game_manager
   
+  @property
+  def missed_count(self):
+    return self.__missed_count
+  
+  @missed_count.setter
+  def missed_count(self, value: int):
+    self.__missed_count = value
+      
   def get_welcome_screen_button_params(self, width: int, height: int):
 
     button_params = {
@@ -80,7 +89,7 @@ class UIManager(metaclass=Singleton):
     # Display Allowed Misses
     y_pos = y_pos + y_offset
     misses_left = level_manager.misses_left
-    self.render_font(font, x_coord, y_pos, "Misses Left: " + str(misses_left))
+    self.render_font(font, x_coord, y_pos, "Misses Left: " + str(self.missed_count) + "/" + str(misses_left))
     
     # Display High Score
     y_pos = y_pos + y_offset
@@ -89,11 +98,8 @@ class UIManager(metaclass=Singleton):
     
     
   def render_blocks(self, level_manager, block_manager):
-    font = level_manager.text_font
-    
-    block_x = block_manager.block_x_limit
-    y_start = block_manager.y_start
-    y_offset = block_manager.offset
+    self.missed_count = level_manager.misses_left 
+    misses = 0  
     
     # Render each block on the screen
     for block in block_manager.blocks:
@@ -101,10 +107,10 @@ class UIManager(metaclass=Singleton):
           block.sprite,
           (block.x_pos, block.y_pos)
       )
-
+          
       # Update block's y_coordinate so that
       # it moves down at a constant speed
-      if block_manager.can_block_move(block):
+      if block_manager.can_block_move(block) and misses < level_manager.misses_left:
         block.y_pos += block.speed
       else:
         # Reference: https://stackoverflow.com/questions/328061/how-to-make-a-surface-with-a-transparent-background-in-pygame
@@ -117,14 +123,12 @@ class UIManager(metaclass=Singleton):
             32)
         
           block.sprite = image
-          misses_left = level_manager.misses_left - 1
-          
-          level_manager.misses_left = misses_left
-          
-          # Update misses left count on the ui
-          self.render_font(font, block_x, ((y_offset * 3) + y_start), "Misses Left: " + str(misses_left))
-        
+          misses += 1          
+    
     # Update blocks_left count on the ui
     blocks_left = level_manager.total_blocks - level_manager.spawned_blocks
-    level_manager.blocks_left = blocks_left
-    self.render_font(font, block_x, ((y_offset * 2) + y_start), "Blocks Left: " + str(blocks_left))
+    level_manager.blocks_left = blocks_left 
+    
+    # Update the missed
+    self.missed_count -= misses
+    self.render_main_screen_ui(level_manager, block_manager)     

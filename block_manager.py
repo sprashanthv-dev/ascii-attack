@@ -53,7 +53,7 @@ class BlockManager(metaclass=Singleton):
     # TODO: Change this based on current level number
     x_limit = 736
     y_limit = 100
-    y_speed = 0.03
+    y_speed = 0.5
 
     # TODO : Change the image path to include a
     # TODO: random number between 0 to 38 inclusive

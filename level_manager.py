@@ -143,10 +143,7 @@ class LevelManager(metaclass=Singleton):
             if not self.game_manager.game_over:
                 # Change background color
                 self.game_manager.screen.fill((0, 0, 0))
-
-                # Display main screen ui
-                self.ui_manager.render_main_screen_ui(self, self.block_manager)
-
+                
                 # Configure the timer object
                 self.timer_info = self.configure_timer(
                     start_timer,
@@ -176,6 +173,7 @@ class LevelManager(metaclass=Singleton):
                         self.spawned_blocks - 1,
                         self.total_blocks):
 
+                    # Display the created blocks on the ui
                     self.ui_manager.render_blocks(self, self.block_manager)
 
                 # Update the display
