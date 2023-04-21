@@ -1,14 +1,19 @@
-import pygame
 import random
 
 from singleton import Singleton
+from block_factory import BlockFactory
+from letter_block_factory import LetterBlockFactory
+from number_block_factory import NumberBlockFactory
+
 from block import Block
+
+
 class BlockManager(metaclass=Singleton):
   def __init__(self, game_manager):
     self.__block = None
     self.__game_manager = game_manager
     self.__blocks = []
-    
+
     self.__block_x_limit = 825
     self.__block_y_limit = 700
     self.__y_start = 50
@@ -17,23 +22,23 @@ class BlockManager(metaclass=Singleton):
   @property
   def block(self):
     return self.__block
-  
+
   @property
   def blocks(self):
     return self.__blocks
-  
+
   @property
   def block_x_limit(self):
     return self.__block_x_limit
-  
+
   @property
   def block_y_limit(self):
     return self.__block_y_limit
-  
+
   @property
   def y_start(self):
     return self.__y_start
-  
+
   @property
   def offset(self):
     return self.__offset
@@ -48,26 +53,32 @@ class BlockManager(metaclass=Singleton):
 
   # Create a block and return it
   def create_block(self) -> Block:
-    block = Block()
+    random_number = random.randint(0, 35)
 
-    # TODO: Change this based on current level number
-    x_limit = 736
-    y_limit = 100
-    y_speed = 0.5
+    # Get the corressponding block
+    # factory based on random number
+    block_factory = self.get_factory(random_number)
 
-    # TODO : Change the image path to include a
-    # TODO: random number between 0 to 38 inclusive
-    block.sprite = pygame.image.load('./assets/img/blocks/12.png')
-    block.x_pos = random.randint(0, x_limit)
-    block.y_pos = random.randint(70, y_limit)
-    block.speed = y_speed
+    # Create the block
+    block = block_factory.create_block()
 
     self.blocks.append(block)
 
     return block
 
-  # Spawns blocks at regular intervals
+  # Get the block factory method based
+  # on the random number generated
+  def get_factory(self, random_number: int):
+    block_factory: BlockFactory
 
+    if random_number >= 0 and random_number <= 9:
+      block_factory = NumberBlockFactory(random_number)
+    else:
+      block_factory = LetterBlockFactory(random_number)
+
+    return block_factory
+
+  # Spawns blocks at regular intervals
   def spawn_block(self):
     pass
 
@@ -88,19 +99,19 @@ class BlockManager(metaclass=Singleton):
     delay_timer = timer_info["delay_time"]
 
     has_timer_expired = self.game_manager.has_timer_expired(
-      start_timer,
-      current_timer,
-      delay_timer)
-    
+        start_timer,
+        current_timer,
+        delay_timer)
+
     has_count_reached = self.block_count_reached(spawned_blocks, total_blocks)
 
     return has_timer_expired and not has_count_reached
-  
+
   def block_count_reached(self, spawned_blocks: int, total_blocks: int) -> bool:
     return True if spawned_blocks == total_blocks else False
-  
-  def can_block_move(self, block : Block) -> bool:
+
+  def can_block_move(self, block: Block) -> bool:
     return block.y_pos < self.block_y_limit
-  
+
   def is_touching_ground(self, block: Block) -> bool:
     return block.y_pos >= self.block_y_limit
