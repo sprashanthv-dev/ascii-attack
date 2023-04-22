@@ -6,6 +6,7 @@ from letter_block_factory import LetterBlockFactory
 from number_block_factory import NumberBlockFactory
 
 from block import Block
+from block_mapping import BLOCK_MAPPINGS
 
 
 class BlockManager(metaclass=Singleton):
@@ -61,7 +62,7 @@ class BlockManager(metaclass=Singleton):
 
     # Create the block
     block = block_factory.create_block()
-
+  
     self.blocks.append(block)
 
     return block

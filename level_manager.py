@@ -132,24 +132,21 @@ class LevelManager(metaclass=Singleton):
         delay_timer = 3000
 
         while not self.game_manager.game_over:
-            for event in pygame.event.get():
-                # If the player clicks on cross icon in toolbar
-                # Or if the player clicks on the quit button
-                if event.type == pygame.QUIT:
-                    self.game_manager.game_over = True
-
+            
+            self.handle_interactions()
+            
             current_timer = pygame.time.get_ticks()
 
             if not self.game_manager.game_over:
                 # Change background color
-                self.game_manager.screen.fill((0, 0, 0))
-                
+                self.game_manager.screen.fill((246, 241, 241))
+
                 # Configure the timer object
                 self.timer_info = self.configure_timer(
                     start_timer,
                     current_timer,
                     delay_timer)
-
+                
                 # Create a block if a block has already not been
                 # created or if the specified interval of time
                 # has elapsed since a block has been instantiated
@@ -179,9 +176,16 @@ class LevelManager(metaclass=Singleton):
                 # Update the display
                 pygame.display.update()
 
-    def handle_key_stroke(self):
-        # Placeholder for handling key stroke logic
-        pass
+    # Handle key stroke logic
+    def handle_interactions(self):
+        for event in pygame.event.get():
+            # If the player clicks on cross icon in toolbar
+            # Or if the player clicks on the quit button
+            if event.type == pygame.QUIT:
+                self.game_manager.game_over = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    print("Key a is pressed")
 
     def handle_missed_block(self):
         # Placeholder for handling missed block logic

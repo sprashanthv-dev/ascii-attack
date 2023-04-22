@@ -33,8 +33,9 @@ class NumberBlock(Block):
 
     block.x_pos = random.randint(x_start, x_limit)
     block.y_pos = random.randint(y_start, y_limit)
+    
     block.speed = y_speed
-
     block.point = 2
+    block.block_number = str(self.block_number)
 
     return block

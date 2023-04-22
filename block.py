@@ -8,6 +8,7 @@ class Block:
     self.__speed = 0
     self.__hits_left = 1
     self.__point = 1
+    self.__block_number = -1
     self.__special_block = False
     self.__touching_ground = False
 
@@ -42,6 +43,10 @@ class Block:
   @property
   def touching_ground(self):
     return self.__touching_ground
+  
+  @property
+  def block_number(self):
+    return self.__block_number
 
   @sprite.setter
   def sprite(self, value: pygame.surface.Surface):
@@ -74,9 +79,13 @@ class Block:
   @touching_ground.setter
   def touching_ground(self, value: bool):
     self.__touching_ground = value
+    
+  @block_number.setter
+  def block_number(self, value: int):
+    self.__block_number = value
 
   def __repr__(self):
       return f"{self.__class__.__name__} (\
-          {self.sprite}, {self.x_pos}, {self.y_pos} \
+          {self.sprite}, {self.block_number} {self.x_pos}, {self.y_pos} \
           {self.speed}, {self.hits_left}, {self.point}\
           {self.touching_ground}, {self.special_block})"

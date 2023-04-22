@@ -74,27 +74,27 @@ class UIManager(metaclass=Singleton):
     
     # Display Level number
     level_number = level_manager.level_number
-    self.render_font(font, x_coord, y_coord, "Level: " + str(level_number))
+    self.render_font(font, x_coord, y_coord, "Level: " + str(level_number), (0,0,0))
     
     # Display Current Score
     current_score = level_manager.score_calculator.score
     y_pos = y_coord + y_offset
-    self.render_font(font, x_coord, y_pos, "Score: " + str(current_score))
+    self.render_font(font, x_coord, y_pos, "Score: " + str(current_score), (0,0,0))
     
     # Display Blocks Left
     y_pos = y_pos + y_offset
     blocks_left = level_manager.total_blocks - level_manager.spawned_blocks
-    self.render_font(font, x_coord, y_pos, "Blocks Left: " + str(blocks_left))
+    self.render_font(font, x_coord, y_pos, "Blocks Left: " + str(blocks_left), (0,0,0))
     
     # Display Allowed Misses
     y_pos = y_pos + y_offset
     misses_left = level_manager.misses_left
-    self.render_font(font, x_coord, y_pos, "Misses Left: " + str(self.missed_count) + "/" + str(misses_left))
+    self.render_font(font, x_coord, y_pos, "Misses Left: " + str(self.missed_count) + "/" + str(misses_left), (0,0,0))
     
     # Display High Score
     y_pos = y_pos + y_offset
     high_score = level_manager.high_score
-    self.render_font(font, x_coord, y_pos, "High Score: " + str(high_score))
+    self.render_font(font, x_coord, y_pos, "High Score: " + str(high_score), (0,0,0))
     
     
   def render_blocks(self, level_manager, block_manager):
@@ -116,13 +116,15 @@ class UIManager(metaclass=Singleton):
         # Reference: https://stackoverflow.com/questions/328061/how-to-make-a-surface-with-a-transparent-background-in-pygame
         # Remove the block from the game, if it is touching 
         # the bottom of the game window
-        if block_manager.is_touching_ground(block):
+        if block_manager.is_touching_ground(block) and not block.touching_ground:
           image = pygame.Surface(
             [self.game_manager.width, self.game_manager.height], 
             pygame.SRCALPHA, 
             32)
         
           block.sprite = image
+          block.touching_ground = True
+          
           misses += 1          
     
     # Update blocks_left count on the ui
