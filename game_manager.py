@@ -173,6 +173,8 @@ class GameManager(metaclass=Singleton):
 
                 welcome_screen.draw()
                 welcome_screen.handle_interactions()
+                
+                self.welcome_screen = welcome_screen
 
             self.update_display()
 

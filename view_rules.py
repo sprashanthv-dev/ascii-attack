@@ -1,6 +1,7 @@
 import pygame
 
 from ui_manager import UIManager
+from welcome_screen import WelcomeScreen
 from button import Button
 
 class ViewRules:
@@ -17,6 +18,9 @@ class ViewRules:
     return self.__ui_manager
   
   def setup_view_rules_ui(self):
+    
+      # Check if back_button was clicked
+      back_button_clicked = False
     
       # Load instructions text from file
       instructions_text = self.load_instructions()
@@ -43,14 +47,14 @@ class ViewRules:
 
             elif event.type == pygame.MOUSEBUTTONDOWN and back_button.is_clicked(event):
                 # Handle "Back" button click by returning to Welcome Screen
-                # self.game_manager.welcome_screen.draw()
-                # welcome_screen = WelcomeScreen(self)
+                welcome_screen = self.game_manager.welcome_screen
+                back_button_clicked = True
+           
+                # TODO: Activate screen once navigated
+                welcome_screen.draw()
+                welcome_screen.handle_interactions()
 
-                # welcome_screen.draw()
-                # welcome_screen.handle_interactions()
-                pass
-
-            if not self.game_manager.game_over:
+            if not self.game_manager.game_over and not back_button_clicked:
               # Change background color
               self.game_manager.screen.fill((255, 255, 255))
 
@@ -59,7 +63,8 @@ class ViewRules:
               # Render "Back" button on the screen
               back_button.draw()
 
-              pygame.display.update()
+          if not self.game_manager.game_over:
+            pygame.display.update()
 
   def load_instructions(self):
       with open("./assets/text_files/instructions.txt") as f:
