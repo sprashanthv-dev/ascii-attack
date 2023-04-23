@@ -12,7 +12,6 @@ from block_manager import BlockManager
 
 from view_rules import ViewRules
 from welcome_screen import WelcomeScreen
-from score_calculator import ScoreCalculator
 from leaderboard import Leaderboard
 
 class GameManager(metaclass=Singleton):
@@ -32,7 +31,6 @@ class GameManager(metaclass=Singleton):
         # instances for easy access
         self.__level_manager = None
         self.__ui_manager = None
-        self.__score_calculator = None
         self.__block_manager = None
         self.__welcome_screen = None
 
@@ -69,10 +67,6 @@ class GameManager(metaclass=Singleton):
         return self.__ui_manager
     
     @property
-    def score_calculator(self):
-        return self.__score_calculator
-    
-    @property
     def block_manager(self):
         return self.__block_manager
 
@@ -103,10 +97,6 @@ class GameManager(metaclass=Singleton):
     def ui_manager(self, value: UIManager):
         self.__ui_manager = value
         
-    @score_calculator.setter
-    def score_calculator(self, value: ScoreCalculator):
-        self.__score_calculator = value
-        
     @block_manager.setter
     def block_manager(self, value: BlockManager):
         self.__block_manager = value
@@ -121,7 +111,6 @@ class GameManager(metaclass=Singleton):
         pygame.init()
 
         # Initialize the required classes
-        self.score_calculator = ScoreCalculator()
         self.block_manager = BlockManager(self)
         self.level_manager = LevelManager(self)
         self.ui_manager = UIManager(self)

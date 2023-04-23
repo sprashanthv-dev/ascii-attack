@@ -35,7 +35,6 @@ class LevelManager(metaclass=Singleton):
 
         self.timer_info = {}
 
-        self.__score_calculator = self.game_manager.score_calculator
         self.__block_manager: BlockManager = self.game_manager.block_manager
 
     @property
@@ -78,10 +77,6 @@ class LevelManager(metaclass=Singleton):
     def block_manager(self):
         return self.__block_manager
 
-    @property
-    def score_calculator(self):
-        return self.__score_calculator
-
     @level_number.setter
     def level_number(self, value: int):
         self.__level_number = value
@@ -121,9 +116,6 @@ class LevelManager(metaclass=Singleton):
 
         # TODO: Reset blocks_x, blocks_y at start of each level
         # TODO : A level ends when blocks spawned == total blocks in that level
-        # TODO : Destroy the block that the player fails to clear
-        # TODO: Track each block's movement and move it until it hits
-        #       the ground or is cleared by the player
 
         # Start timer
         start_timer = pygame.time.get_ticks()

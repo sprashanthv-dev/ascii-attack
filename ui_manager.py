@@ -1,6 +1,8 @@
 import pygame
 
 from singleton import Singleton
+from score_calculator import ScoreCalculator
+
 # TODO: Check circular import issue with Game Manager
 class UIManager(metaclass=Singleton):
   
@@ -86,7 +88,7 @@ class UIManager(metaclass=Singleton):
     self.render_font(font, x_coord, y_coord, "Level: " + str(level_number), (0,0,0))
     
     # Display Current Score
-    current_score = level_manager.score_calculator.score
+    current_score = ScoreCalculator().score
     y_pos = y_coord + y_offset
     self.render_font(font, x_coord, y_pos, "Score: " + str(current_score), (0,0,0))
     
