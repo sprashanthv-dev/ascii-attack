@@ -104,10 +104,6 @@ class LevelManager(metaclass=Singleton):
         # Render main screen ui elements
         self.setup_level_ui()
 
-        # Create a block
-        # block = self.block_manager.create_block()
-        # print("Block " + block)
-
     def setup_level_ui(self):
         block_created = False
 
@@ -115,7 +111,6 @@ class LevelManager(metaclass=Singleton):
         self.spawned_blocks = 0
 
         # TODO: Reset blocks_x, blocks_y at start of each level
-        # TODO : A level ends when blocks spawned == total blocks in that level
 
         # Start timer
         start_timer = pygame.time.get_ticks()
@@ -167,6 +162,11 @@ class LevelManager(metaclass=Singleton):
 
                 # Update the display
                 pygame.display.update()
+                       
+            if self.blocks_left == 0 and\
+                (len(self.block_manager.blocks) == 0) and\
+                    (self.ui_manager.missed_count > 0):
+                print("Level Cleared")
 
     # Handle key stroke logic
     def handle_interactions(self):

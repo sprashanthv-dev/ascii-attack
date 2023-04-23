@@ -112,16 +112,7 @@ class BlockManager(metaclass=Singleton):
 
     # Reference: https://stackoverflow.com/questions/68186924/how-do-i-check-if-a-filter-returns-no-results-in-python-3
     try:
-      item: Block = next(block)
-
-      # Try to get the index of the block if it exists
-      item_index = self.blocks.index(item)
-
-      # Remove that block from our blocks_list
-      blocks.pop(item_index)
-
-      # Update our original blocks list
-      self.blocks = blocks
+      item = self.remove_block(block, blocks)
       
       # Update the player's current score
       self.score_calculator.score += item.point
@@ -129,6 +120,21 @@ class BlockManager(metaclass=Singleton):
     # If no block exists with the specified ascii value
     except StopIteration:
         print("No item exists")
+
+  # Remove block from blocks list
+  def remove_block(self, block: Block, blocks):
+    item: Block = next(block)
+
+    # Try to get the index of the block if it exists
+    item_index = self.blocks.index(item)
+
+    # Remove that block from our blocks_list
+    blocks.pop(item_index)
+
+    # Update our original blocks list
+    self.blocks = blocks
+    
+    return item
 
   # Handle missed block
   def handle_missed_block(self, block):

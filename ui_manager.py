@@ -110,7 +110,7 @@ class UIManager(metaclass=Singleton):
     
   def render_blocks(self, level_manager, block_manager):
     self.missed_count = level_manager.misses_left 
-    
+        
     # Render each block on the screen
     for block in block_manager.blocks:
       self.game_manager.screen.blit(
@@ -123,17 +123,31 @@ class UIManager(metaclass=Singleton):
       if block_manager.can_block_move(block) and self.current_misses < level_manager.misses_left:
         block.y_pos += block.speed
       else:
-        # Reference: https://stackoverflow.com/questions/328061/how-to-make-a-surface-with-a-transparent-background-in-pygame
+           
         # Remove the block from the game, if it is
         # touching the bottom of the game window
         if block_manager.is_touching_ground(block) and not block.touching_ground:
-          block = block_manager.handle_missed_block(block)
-          self.current_misses += 1          
+          
+          block.touching_ground = True
+
+          # Since the block is missed, remove it from the blocks list
+          filtered_block = filter(lambda each_block: int(
+              each_block.block_number) == int(block.block_number),
+              block_manager.blocks)
+          
+          block_manager.remove_block(filtered_block, block_manager.blocks)
+          
+          self.current_misses += 1       
+          
+          # Check game over condition
+          # TODO: Restrict destroying blocks when game is over
+          if self.current_misses >= level_manager.misses_left:
+            print("Game Over !!!")   
     
     # Update blocks_left count on the ui
     blocks_left = level_manager.total_blocks - level_manager.spawned_blocks
     level_manager.blocks_left = blocks_left 
         
-    # Update the missed
+    # Update the missed count
     self.missed_count -= self.current_misses
     self.render_main_screen_ui(level_manager, block_manager)     

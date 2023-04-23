@@ -86,6 +86,6 @@ class Block:
 
   def __repr__(self):
       return f"{self.__class__.__name__} (\
-          {self.sprite}, {self.block_number} {self.x_pos}, {self.y_pos} \
+          {self.sprite}, {self.block_number}, {self.x_pos}, {self.y_pos} \
           {self.speed}, {self.hits_left}, {self.point}\
           {self.touching_ground}, {self.special_block})"
