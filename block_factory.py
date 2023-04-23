@@ -19,7 +19,7 @@ class BlockFactory(ABC):
     return {
         "x_limit": 736,
         "y_limit": 100,
-        "y_speed": 0.09,
+        "y_speed": 0.03,
         "x_start": 0,
         "y_start": 70
     }

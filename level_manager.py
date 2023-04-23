@@ -184,13 +184,21 @@ class LevelManager(metaclass=Singleton):
             if event.type == pygame.QUIT:
                 self.game_manager.game_over = True
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    print("Key a is pressed")
-
-    def handle_missed_block(self):
-        # Placeholder for handling missed block logic
-        pass
-
+                keys = pygame.key.get_pressed()
+                
+                # Reference: https://stackoverflow.com/questions/598398/searching-a-list-of-objects-in-python
+                # Detect key presses on number based blocks
+                for i in range(0, 10):
+                    if keys[pygame.K_0 + i]:
+                        ascii_value = pygame.K_0 + i
+                        self.block_manager.destroy_block(ascii_value, 48)
+                        
+                # Detect key presses on letter based blocks
+                for i in range(0, 26):
+                    if keys[pygame.K_a + i]:
+                        ascii_value = pygame.K_a + i
+                        self.block_manager.destroy_block(ascii_value + 10, 97)
+                
     def configure_timer(self, start_timer, current_timer, delay_timer):
         self.timer_info = {
             "start_time": start_timer,

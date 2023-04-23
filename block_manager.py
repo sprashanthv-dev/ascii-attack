@@ -1,3 +1,4 @@
+import pygame
 import random
 
 from singleton import Singleton
@@ -6,8 +7,6 @@ from letter_block_factory import LetterBlockFactory
 from number_block_factory import NumberBlockFactory
 
 from block import Block
-from block_mapping import BLOCK_MAPPINGS
-
 
 class BlockManager(metaclass=Singleton):
   def __init__(self, game_manager):
@@ -51,7 +50,11 @@ class BlockManager(metaclass=Singleton):
   @block.setter
   def block(self, value: Block):
     self.__block = value
-
+    
+  @blocks.setter
+  def blocks(self, value = []):
+    self.__blocks = value
+    
   # Create a block and return it
   def create_block(self) -> Block:
     random_number = random.randint(0, 35)
@@ -89,9 +92,44 @@ class BlockManager(metaclass=Singleton):
     pass
 
   # Destroy the block from the game
-  def destroy_block(self):
-    pass
-
+  def destroy_block(self, ascii_value: int, base: int):
+  
+    # Store a reference of the current blocks in the game
+    blocks = self.blocks
+    
+    # Reference: https://stackoverflow.com/questions/598398/searching-a-list-of-objects-in-python
+    # Check if a block exists with the ascii value specified
+    block = filter(lambda block: int(block.block_number) == ascii_value - base, blocks)
+    
+    # Reference: https://stackoverflow.com/questions/68186924/how-do-i-check-if-a-filter-returns-no-results-in-python-3
+    try:
+      item = next(block)
+      
+      # Try to get the index of the block if it exists
+      item_index = self.blocks.index(item)
+      
+      # Remove that block from our blocks_list
+      blocks.pop(item_index)
+      
+      # Update our original blocks list
+      self.blocks = blocks
+        
+    # If no block exists with the specified ascii value
+    except StopIteration:
+        print("No item exists")
+        
+  # Handle missed block
+  def handle_missed_block(self, block):
+    image = pygame.Surface(
+        [self.game_manager.width, self.game_manager.height], 
+        pygame.SRCALPHA, 
+        32)
+    
+    block.sprite = image
+    block.touching_ground = True
+    
+    return block
+                
   # Decide if it is time
   # to spawn the next block
   def spawn_next_block(self, timer_info, spawned_blocks: int, total_blocks: int) -> bool:

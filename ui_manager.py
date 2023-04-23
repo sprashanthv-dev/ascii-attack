@@ -7,6 +7,7 @@ class UIManager(metaclass=Singleton):
   def __init__(self, game_manager):
     self.__game_manager = game_manager
     self.__missed_count = 0
+    self.__current_misses = 0
     
   @property
   def game_manager(self):
@@ -19,6 +20,14 @@ class UIManager(metaclass=Singleton):
   @missed_count.setter
   def missed_count(self, value: int):
     self.__missed_count = value
+    
+  @property
+  def current_misses(self):
+    return self.__current_misses
+  
+  @current_misses.setter
+  def current_misses(self, value: int):
+    self.__current_misses = value
       
   def get_welcome_screen_button_params(self, width: int, height: int):
 
@@ -99,7 +108,6 @@ class UIManager(metaclass=Singleton):
     
   def render_blocks(self, level_manager, block_manager):
     self.missed_count = level_manager.misses_left 
-    misses = 0  
     
     # Render each block on the screen
     for block in block_manager.blocks:
@@ -110,27 +118,20 @@ class UIManager(metaclass=Singleton):
           
       # Update block's y_coordinate so that
       # it moves down at a constant speed
-      if block_manager.can_block_move(block) and misses < level_manager.misses_left:
+      if block_manager.can_block_move(block) and self.current_misses < level_manager.misses_left:
         block.y_pos += block.speed
       else:
         # Reference: https://stackoverflow.com/questions/328061/how-to-make-a-surface-with-a-transparent-background-in-pygame
-        # Remove the block from the game, if it is touching 
-        # the bottom of the game window
+        # Remove the block from the game, if it is
+        # touching the bottom of the game window
         if block_manager.is_touching_ground(block) and not block.touching_ground:
-          image = pygame.Surface(
-            [self.game_manager.width, self.game_manager.height], 
-            pygame.SRCALPHA, 
-            32)
-        
-          block.sprite = image
-          block.touching_ground = True
-          
-          misses += 1          
+          block = block_manager.handle_missed_block(block)
+          self.current_misses += 1          
     
     # Update blocks_left count on the ui
     blocks_left = level_manager.total_blocks - level_manager.spawned_blocks
     level_manager.blocks_left = blocks_left 
-    
+        
     # Update the missed
-    self.missed_count -= misses
+    self.missed_count -= self.current_misses
     self.render_main_screen_ui(level_manager, block_manager)     
