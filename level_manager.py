@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 
 from singleton import Singleton
 from block_manager import BlockManager
@@ -24,6 +25,11 @@ class LevelManager(metaclass=Singleton):
         self.__misses_left = 3
 
         self.__text_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 20)
+        self.__message_font = pygame.font.Font('./assets/fonts/SuperMario256.ttf', 64)
+        
+        self.__block_hit_sound = mixer.Sound('./assets/sounds/block_hit.mp3')
+        self.__block_miss_sound = mixer.Sound('./assets/sounds/block_miss.wav')
+        self.__level_complete_sound = mixer.Sound('./assets/sounds/level_complete.wav')
 
         self.__ui_manager = UIManager(game_manager)
         self.__game_manager = game_manager
@@ -56,6 +62,22 @@ class LevelManager(metaclass=Singleton):
     @property
     def text_font(self):
         return self.__text_font
+    
+    @property
+    def message_font(self):
+        return self.__message_font
+    
+    @property
+    def block_hit_sound(self):
+        return self.__block_hit_sound
+    
+    @property
+    def block_miss_sound(self):
+        return self.__block_miss_sound
+    
+    @property
+    def level_complete_sound(self):
+        return self.__level_complete_sound
 
     @property
     def total_blocks(self):
@@ -106,6 +128,7 @@ class LevelManager(metaclass=Singleton):
 
     def setup_level_ui(self):
         block_created = False
+        is_level_sound_played = False
 
         # TODO: Reset for each new level
         self.spawned_blocks = 0
@@ -159,14 +182,20 @@ class LevelManager(metaclass=Singleton):
 
                     # Display the created blocks on the ui
                     self.ui_manager.render_blocks(self, self.block_manager)
-
-                # Update the display
-                pygame.display.update()
-                       
+               
+            # Check if level is cleared        
             if self.blocks_left == 0 and\
                 (len(self.block_manager.blocks) == 0) and\
                     (self.ui_manager.missed_count > 0):
-                print("Level Cleared")
+                self.ui_manager.render_font(self.message_font, 150, 320, 'LEVEL CLEARED!!!', (83,145,101))
+                
+                if not is_level_sound_played:
+                    self.level_complete_sound.play()
+                    is_level_sound_played = True
+            
+            if not self.game_manager.game_over:
+                # Update the display
+                pygame.display.update()
 
     # Handle key stroke logic
     def handle_interactions(self):
@@ -184,13 +213,15 @@ class LevelManager(metaclass=Singleton):
                     if keys[pygame.K_0 + i]:
                         ascii_value = pygame.K_0 + i
                         self.block_manager.destroy_block(ascii_value, 48)
+                        self.block_hit_sound.play()
                         
                 # Detect key presses on letter based blocks
                 for i in range(0, 26):
                     if keys[pygame.K_a + i]:
                         ascii_value = pygame.K_a + i
                         self.block_manager.destroy_block(ascii_value + 10, 97)
-                
+                        self.block_hit_sound.play()
+
     def configure_timer(self, start_timer, current_timer, delay_timer):
         self.timer_info = {
             "start_time": start_timer,

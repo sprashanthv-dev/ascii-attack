@@ -45,10 +45,12 @@ class UIManager(metaclass=Singleton):
     return button_params
 
   def render_font(self, font: pygame.font.Font, x_coord: int, y_coord: int, text: str, color = (255,255,255)):
-    font_properties = font.render(text, True, color)
-
-    # Render title on the screen
-    self.game_manager.screen.blit(font_properties, (x_coord, y_coord))
+    
+    if not self.game_manager.game_over:
+      font_properties = font.render(text, True, color)
+      
+      # Render title on the screen
+      self.game_manager.screen.blit(font_properties, (x_coord, y_coord))
     
   def render_paragraph(self, text, font, rect, surface, color):
         # Split text into lines
@@ -136,6 +138,7 @@ class UIManager(metaclass=Singleton):
               block_manager.blocks)
           
           block_manager.remove_block(filtered_block, block_manager.blocks)
+          level_manager.block_miss_sound.play()
           
           self.current_misses += 1       
           
