@@ -125,6 +125,7 @@ class UIManager(metaclass=Singleton):
         
     # Render each block on the screen
     for block in block_manager.blocks:
+      print(block.speed)
       self.game_manager.screen.blit(
           block.sprite,
           (block.x_pos, block.y_pos)

@@ -12,6 +12,10 @@ from ui_manager import UIManager
 class LevelManager(metaclass=Singleton):
     def __init__(self, game_manager):
         self.__level_number = 0
+        self.__level_cleared = False
+        
+        # TODO: Reset back to 10 after testing
+        self.__max_levels = 2
 
         # TODO: Get from game manager
         self.__high_score = 0
@@ -19,9 +23,6 @@ class LevelManager(metaclass=Singleton):
         # TODO: Get from block manager
         self.__blocks_left = 0
 
-        # Static value of 3 for now
-        # TODO: Change this based on current level number
-        # TODO: Higher the level, lesser is the total misses
         self.__misses_left = 3
 
         self.__text_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 20)
@@ -34,10 +35,9 @@ class LevelManager(metaclass=Singleton):
         self.__ui_manager = UIManager(game_manager)
         self.__game_manager = game_manager
 
-        # TODO: Change this based on current level number
-        # TODO: Higher the level, higher the total blocks
-        self.__total_blocks = 5
+        self.__total_blocks = 0
         self.__spawned_blocks = 0
+        self.__block_multiplier = 5
 
         self.timer_info = {}
 
@@ -86,6 +86,18 @@ class LevelManager(metaclass=Singleton):
     @property
     def spawned_blocks(self):
         return self.__spawned_blocks
+    
+    @property
+    def level_cleared(self):
+        return self.__level_cleared
+    
+    @property
+    def max_levels(self):
+        return self.__max_levels
+    
+    @property
+    def block_multiplier(self):
+        return self.__block_multiplier
 
     @property
     def ui_manager(self):
@@ -118,13 +130,20 @@ class LevelManager(metaclass=Singleton):
     @spawned_blocks.setter
     def spawned_blocks(self, value: int):
         self.__spawned_blocks = value
+        
+    @level_cleared.setter
+    def level_cleared(self, value: bool):
+        self.__level_cleared = value
 
-    def load_level(self):
+    def load_level(self): 
         # Increment level number
         self.level_number += 1
+        
+        # Calculate total blocks spawned in the current level
+        self.total_blocks = self.level_number * self.block_multiplier
 
         # Render main screen ui elements
-        self.setup_level_ui()
+        self.setup_level_ui()     
 
     def setup_level_ui(self):
         block_created = False
@@ -133,7 +152,8 @@ class LevelManager(metaclass=Singleton):
         # TODO: Reset for each new level
         self.spawned_blocks = 0
 
-        # TODO: Reset blocks_x, blocks_y at start of each level
+        # TODO: Reset block list at start of each level
+        self.block_manager.blocks = []
 
         # Start timer
         start_timer = pygame.time.get_ticks()
@@ -141,13 +161,13 @@ class LevelManager(metaclass=Singleton):
         # Time to delay in milliseconds
         delay_timer = 3000
 
-        while not self.game_manager.game_over:
+        while not self.level_cleared:
             
             self.handle_interactions()
             
             current_timer = pygame.time.get_ticks()
 
-            if not self.game_manager.game_over:
+            if not self.level_cleared:
                 # Change background color
                 self.game_manager.screen.fill((246, 241, 241))
 
@@ -187,13 +207,22 @@ class LevelManager(metaclass=Singleton):
             if self.blocks_left == 0 and\
                 (len(self.block_manager.blocks) == 0) and\
                     (self.ui_manager.missed_count > 0):
+                        
+                # Display level cleared message
                 self.ui_manager.render_font(self.message_font, 150, 320, 'LEVEL CLEARED!!!', (83,145,101))
                 
+                # Play level cleared sound
                 if not is_level_sound_played:
                     self.level_complete_sound.play()
                     is_level_sound_played = True
-            
-            if not self.game_manager.game_over:
+                    
+                # Wait until the sound is finished playing
+                # Reference: https://stackoverflow.com/questions/54444765/check-if-a-pygame-mixer-channel-is-playing-a-sound
+                if not mixer.Channel(0).get_busy():
+                    # Indicate that the level is cleared
+                    self.level_cleared = True
+                    
+            if not self.level_cleared:
                 # Update the display
                 pygame.display.update()
 

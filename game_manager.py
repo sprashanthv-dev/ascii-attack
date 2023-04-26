@@ -14,6 +14,7 @@ from view_rules import ViewRules
 from welcome_screen import WelcomeScreen
 from leaderboard import Leaderboard
 
+
 class GameManager(metaclass=Singleton):
     def __init__(self) -> None:
 
@@ -27,7 +28,7 @@ class GameManager(metaclass=Singleton):
 
         self.__screen = None
 
-        # Store references to other class 
+        # Store references to other class
         # instances for easy access
         self.__level_manager = None
         self.__ui_manager = None
@@ -65,7 +66,7 @@ class GameManager(metaclass=Singleton):
     @property
     def ui_manager(self):
         return self.__ui_manager
-    
+
     @property
     def block_manager(self):
         return self.__block_manager
@@ -77,7 +78,7 @@ class GameManager(metaclass=Singleton):
     @property
     def welcome_screen(self):
         return self.__welcome_screen
-    
+
     # Allow game over attribute
     # to be changed through setter
     @game_over.setter
@@ -96,11 +97,11 @@ class GameManager(metaclass=Singleton):
     @ui_manager.setter
     def ui_manager(self, value: UIManager):
         self.__ui_manager = value
-        
+
     @block_manager.setter
     def block_manager(self, value: BlockManager):
         self.__block_manager = value
-        
+
     @welcome_screen.setter
     def welcome_screen(self, value: WelcomeScreen):
         self.__welcome_screen = value
@@ -137,7 +138,7 @@ class GameManager(metaclass=Singleton):
 
         # Time to delay in milliseconds
         delay_timer = 3000
-        
+
         while not self.game_over:
 
             self.show_loading_screen()
@@ -162,26 +163,29 @@ class GameManager(metaclass=Singleton):
 
                 welcome_screen.draw()
                 welcome_screen.handle_interactions()
-                
+
                 self.welcome_screen = welcome_screen
 
             self.update_display()
 
-    def show_loading_screen(self):
+    def show_loading_screen(self, msg: str = ""):
 
         # Change background color
         self.screen.fill((11, 36, 71))
-        
+
         # Set Title Text and position
         title_font = pygame.font.Font('./assets/fonts/SuperMario256.ttf', 96)
-        self.ui_manager.render_font(title_font, 150, 260, self.title.upper(), (255, 201, 60))
+        self.ui_manager.render_font(
+            title_font, 150, 260, self.title.upper(), (255, 201, 60))
 
         # Set Loading Text and position
         loader_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 32)
-        self.ui_manager.render_font(loader_font, 420, 380, "Loading ...")
+        
+        self.ui_manager.render_font(
+            loader_font, 360, 380, "Loading " + msg + " ...")
 
-    def handle_game_start(self, start_timer: int, value: bool):
-        self.game_started = value
+    def handle_game_start(self, start_timer: int, value: bool, msg: str = ""):
+        self.game_started = value if self.level_manager.level_number == 0 else self.game_started
 
         # TODO: Refactor delay to a method
         # Time to delay in milliseconds
@@ -190,7 +194,7 @@ class GameManager(metaclass=Singleton):
 
         # Check if the start button has been clicked
         if self.game_started:
-            self.show_loading_screen()
+            self.show_loading_screen(msg)
 
             # While the delay has not expired
             while not delay_done:
@@ -210,23 +214,39 @@ class GameManager(metaclass=Singleton):
             # Load the level
             self.level_manager.load_level()
 
+            # If a level was cleared
+            if self.level_manager.level_cleared:
+
+                # If the level number has not reached the max
+                # levels in the game, load the next level.
+                if self.level_manager.level_number != self.level_manager.max_levels:
+                    self.level_manager.level_cleared = False
+
+                    start_timer = pygame.time.get_ticks()
+                    level_number = self.level_manager.level_number + 1
+                    
+                    self.handle_game_start(
+                        start_timer, True, "Level " + str(level_number))
+                else:
+                    # TODO : Handle all levels cleared by player
+                    print("Max level reached")
+
     def handle_quit_game(self):
         pygame.quit()
-        
+
     def handle_view_rules(self):
         # Load the view rules page
         rules = ViewRules(self)
         rules.setup_view_rules_ui()
-        
+
     def handle_view_leaderboard(self):
         # Load the view rules page
         leaderboard = Leaderboard(self)
         leaderboard.setup_view_leaderboard_ui()
-        
-    
+
     def has_timer_expired(self, start, current, delay) -> bool:
         return current - start >= delay
-        
+
     def update_display(self):
         if not self.game_over:
             # Update the display continuously

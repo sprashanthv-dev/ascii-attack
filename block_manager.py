@@ -84,9 +84,9 @@ class BlockManager(metaclass=Singleton):
     block_factory: BlockFactory
 
     if random_number >= 0 and random_number <= 9:
-      block_factory = NumberBlockFactory(random_number)
+      block_factory = NumberBlockFactory(random_number, self.game_manager.level_manager)
     else:
-      block_factory = LetterBlockFactory(random_number)
+      block_factory = LetterBlockFactory(random_number, self.game_manager.level_manager)
 
     return block_factory
 

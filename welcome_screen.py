@@ -10,6 +10,7 @@ class WelcomeScreen:
         
         self.__game_manager = game_manager
         self.__ui_manager = self.game_manager.ui_manager
+        self.__level_manager = self.game_manager.level_manager
         
         self.initialize_attributes()
         self.add_background()           
@@ -22,6 +23,10 @@ class WelcomeScreen:
     @property
     def ui_manager(self):
         return self.__ui_manager
+    
+    @property
+    def level_manager(self):
+        return self.__level_manager
               
     def initialize_attributes(self):        
         self.screen = self.game_manager.screen
@@ -59,7 +64,9 @@ class WelcomeScreen:
             if self.start_game.is_clicked(event):
                 # Start timer
                 start_timer = pygame.time.get_ticks()
-                self.game_manager.handle_game_start(start_timer, True) 
+                
+                level_number = self.level_manager.level_number + 1
+                self.game_manager.handle_game_start(start_timer, True, "Level " + str(level_number)) 
             if self.view_rules.is_clicked(event):
                 self.game_manager.handle_view_rules()
             if self.view_leaderboard.is_clicked(event):

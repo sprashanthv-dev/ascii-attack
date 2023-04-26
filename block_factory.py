@@ -15,13 +15,13 @@ class BlockFactory(ABC):
   @property
   @abstractmethod
   def block_config(self):
-    # TODO: Change this based on current level number
     return {
         "x_limit": 736,
         "y_limit": 100,
-        "y_speed": 0.09,
+        "y_speed": 0.07,
         "x_start": 0,
-        "y_start": 70
+        "y_start": 70,
+        "speed_multiplier": 0.05
     }
 
   @abstractmethod
