@@ -2,6 +2,7 @@ import pygame
 
 from singleton import Singleton
 from score_calculator import ScoreCalculator
+from game_over_screen import GameOverScreen
 
 # TODO: Check circular import issue with Game Manager
 class UIManager(metaclass=Singleton):
@@ -10,6 +11,7 @@ class UIManager(metaclass=Singleton):
     self.__game_manager = game_manager
     self.__missed_count = 0
     self.__current_misses = 0
+    self.__current_score = 0
     
   @property
   def game_manager(self):
@@ -30,6 +32,14 @@ class UIManager(metaclass=Singleton):
   @current_misses.setter
   def current_misses(self, value: int):
     self.__current_misses = value
+    
+  @property
+  def current_score(self):
+    return self.__current_score
+  
+  @current_score.setter
+  def current_score(self, value: int):
+    self.__current_score = value
       
   def get_welcome_screen_button_params(self, width: int, height: int):
 
@@ -145,6 +155,8 @@ class UIManager(metaclass=Singleton):
           # Check game over condition
           # TODO: Restrict destroying blocks when game is over
           if self.current_misses >= level_manager.misses_left:
+            game_over = GameOverScreen(self.game_manager,self)
+            game_over.load_game_over_ui()
             print("Game Over !!!")   
     
     # Update blocks_left count on the ui

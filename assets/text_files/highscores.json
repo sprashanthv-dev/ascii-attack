@@ -1,1 +1,12 @@
-[{"name": "Ashwin", "score": 1000}, {"name": "Prashanth", "score": 1000}, {"name": "Prashanth", "score": 1000}, {"name": "Ashwin", "score": 1000}, {"name": "Prashanth", "score": 981}, {"name": "Prashanth", "score": 977}, {"name": "Ashwin", "score": 975}, {"name": "Prashanth", "score": 974}, {"name": "Ashwin", "score": 955}, {"name": "Prashanth", "score": 953}]
+[
+  { "name": "Ashwin", "score": 25 },
+  { "name": "Prashanth", "score": 25 },
+  { "name": "________", "score": 0 },
+  { "name": "________", "score": 0 },
+  { "name": "________", "score": 0 },
+  { "name": "________", "score": 0 },
+  { "name": "________", "score": 0 },
+  { "name": "________", "score": 0 },
+  { "name": "________", "score": 0 },
+  { "name": "________", "score": 0 }
+]
