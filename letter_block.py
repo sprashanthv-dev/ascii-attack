@@ -41,7 +41,7 @@ class LetterBlock(Block):
     block.y_pos = random.randint(y_start, y_limit)
     
     block.speed = (self.level_manager.level_number * speed_multiplier) + y_speed
-    block.point = 2
+    block.point = 1
     block.block_number = str(self.block_number)
 
     return block

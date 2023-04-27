@@ -1,49 +1,69 @@
 import pygame
-# from score_calculator import ScoreCalculator
+from score_calculator import ScoreCalculator
 # from leaderboard import Leaderboard
 
 from button import Button
+
 
 class GameOverScreen:
     def __init__(self, game_manager, ui_manager):
         self.__game_manager = game_manager
         self.__ui_manager = ui_manager
+        self.__title_font = pygame.font.Font(
+            "./assets/fonts/SuperMario256.ttf", 72)
+        self.__text_font = pygame.font.Font(
+            "./assets/fonts/SuperMario256.ttf", 32)
         
+        self.__player_score = ScoreCalculator().score
+
     @property
     def game_manager(self):
         return self.__game_manager
-    
+
     @property
     def ui_manager(self):
         return self.__ui_manager
+
+    @property
+    def title_font(self):
+        return self.__title_font
+
+    @property
+    def text_font(self):
+        return self.__text_font
     
+    @property
+    def player_score(self):
+        return self.__player_score
+
     def load_game_over_ui(self):
         # Need to write logic to get the exact score of player after game over
-        player_score = 20
         name = ''
-        input_font = pygame.font.Font("./assets/fonts/SuperMario256.ttf", 32)
-        input_text = input_font.render("Enter your name:", True, (0, 0, 0))
-        input_rect = input_text.get_rect(center=(self.game_manager.screen.get_width() // 2, 300))
+        input_text = self.text_font.render("Enter your name:", True, (0, 0, 0))
+        
+        input_rect = input_text.get_rect(
+            center=(self.game_manager.screen.get_width() // 2, 300))
 
         # Create the Quit and Restart buttons
-         # Assign button positions
+        # Assign button positions
         button_padding = 10
         quit_button_x = self.game_manager.screen.get_width() - 200 - button_padding
+
         restart_button_x = 50 + button_padding
         button_y = self.game_manager.screen.get_height() - 250 - button_padding
 
         # Add Quit button in bottom right corner
         quit_button = Button(self.game_manager.screen,
-                            "Quit",
-                            quit_button_x,
-                            button_y)
-                
+                             "Quit",
+                             quit_button_x,
+                             button_y)
+
         # Add Restart button in bottom left corner
         restart_button = Button(self.game_manager.screen,
                                 "Restart",
                                 restart_button_x,
                                 button_y)
-        
+
         while not self.game_manager.game_over:
             for event in pygame.event.get():
                 # If the player clicks on cross icon in toolbar
@@ -68,33 +88,24 @@ class GameOverScreen:
                 self.game_manager.screen.fill((255, 255, 255))
 
                 # Render "Game Over" text on the screen
-                title_font = pygame.font.Font("./assets/fonts/SuperMario256.ttf", 72)
-                title_text = title_font.render("Game Over", True, (255, 0, 0))
-                title_rect = title_text.get_rect(center=(self.game_manager.screen.get_width() // 2, 100))
-                self.game_manager.screen.blit(title_text, title_rect)
+                title_text = self.title_font.render("Game Over", True, (255, 0, 0))
+                self.ui_manager.draw_rect(title_text, 100)
 
                 # Render current score below the "Game Over" text
-                score_font = pygame.font.Font("./assets/fonts/SuperMario256.ttf", 48)
-                score_text = score_font.render(f"Score: {player_score}", True, (0, 0, 0))
-                score_rect = score_text.get_rect(center=(self.game_manager.screen.get_width() // 2, 200))
-                self.game_manager.screen.blit(score_text, score_rect)
+                score_text = self.text_font.render(f"Score: {self.player_score}", True, (0, 0, 0))
+                self.ui_manager.draw_rect(score_text, 200)
 
                 # Render input text and name on the screen
                 self.game_manager.screen.blit(input_text, input_rect)
-                name_font = pygame.font.Font("./assets/fonts/SuperMario256.ttf", 32)
-                name_text = name_font.render(name, True, (0, 0, 0))
-                name_rect = name_text.get_rect(center=(self.game_manager.screen.get_width() // 2, 350))
-                self.game_manager.screen.blit(name_text, name_rect)
-                
+                name_text = self.text_font.render(name, True, (0, 0, 0))
+                self.ui_manager.draw_rect(name_text, 350)
+
                 # Add the name and score to highscores.json file
                 # leaderboard = Leaderboard(game_manager)
-                # leaderboard.add_score(name, player_score) 
-
+                # leaderboard.add_score(name, player_score)
 
                 # Draw the Quit and Restart buttons on the screen
                 quit_button.draw()
                 restart_button.draw()
 
                 pygame.display.update()
-                
-

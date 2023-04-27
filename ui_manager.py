@@ -125,7 +125,6 @@ class UIManager(metaclass=Singleton):
         
     # Render each block on the screen
     for block in block_manager.blocks:
-      print(block.speed)
       self.game_manager.screen.blit(
           block.sprite,
           (block.x_pos, block.y_pos)
@@ -158,7 +157,6 @@ class UIManager(metaclass=Singleton):
           if self.current_misses >= level_manager.misses_left:
             game_over = GameOverScreen(self.game_manager,self)
             game_over.load_game_over_ui()
-            print("Game Over !!!")   
     
     # Update blocks_left count on the ui
     blocks_left = level_manager.total_blocks - level_manager.spawned_blocks
@@ -166,4 +164,11 @@ class UIManager(metaclass=Singleton):
         
     # Update the missed count
     self.missed_count -= self.current_misses
-    self.render_main_screen_ui(level_manager, block_manager)     
+    self.render_main_screen_ui(level_manager, block_manager)   
+    
+  def draw_rect(self,
+                title_surface: pygame.surface.Surface,
+                height: int) -> None:
+    width = self.game_manager.screen.get_width() // 2
+    title_rect = title_surface.get_rect(center=(width, height))
+    self.game_manager.screen.blit(title_surface, title_rect)
