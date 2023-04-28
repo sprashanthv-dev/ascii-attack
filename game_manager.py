@@ -12,6 +12,7 @@ from block_manager import BlockManager
 
 from view_rules import ViewRules
 from welcome_screen import WelcomeScreen
+from game_over_screen import GameOverScreen
 from leaderboard import Leaderboard
 
 
@@ -228,8 +229,9 @@ class GameManager(metaclass=Singleton):
                     self.handle_game_start(
                         start_timer, True, "Level " + str(level_number))
                 else:
-                    # TODO : Handle all levels cleared by player
                     print("Max level reached")
+                    game_over = GameOverScreen(self, self.ui_manager, "Game Completed!!!")
+                    game_over.load_game_over_ui()
 
     def handle_quit_game(self):
         pygame.quit()

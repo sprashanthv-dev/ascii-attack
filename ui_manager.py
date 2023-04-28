@@ -167,7 +167,7 @@ class UIManager(metaclass=Singleton):
           # Check game over condition
           # TODO: Restrict destroying blocks when game is over
           if self.current_misses >= level_manager.misses_left:
-            game_over = GameOverScreen(self.game_manager,self)
+            game_over = GameOverScreen(self.game_manager, self, "Game Over")
             game_over.load_game_over_ui()
     
     # Update blocks_left count on the ui
