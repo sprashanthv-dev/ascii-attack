@@ -1,5 +1,6 @@
 import pygame
 import random
+from destroy_block import DestroyBlock
 
 from singleton import Singleton
 
@@ -9,6 +10,7 @@ from number_block_factory import NumberBlockFactory
 
 from block import Block
 from score_calculator import ScoreCalculator
+from handle_commands import HandleCommands
 
 
 class BlockManager(metaclass=Singleton):
@@ -112,41 +114,17 @@ class BlockManager(metaclass=Singleton):
 
     # Reference: https://stackoverflow.com/questions/68186924/how-do-i-check-if-a-filter-returns-no-results-in-python-3
     try:
-      item = self.remove_block(block, blocks)
+      item: Block = next(block)
+      
+      command_handler = HandleCommands()
+      command_handler.execute(DestroyBlock(item, self.game_manager, self))
       
       # Update the player's current score
       self.score_calculator.score += item.point
-
+            
     # If no block exists with the specified ascii value
     except StopIteration:
         print("No item exists")
-
-  # Remove block from blocks list
-  def remove_block(self, block: Block, blocks):
-    item: Block = next(block)
-
-    # Try to get the index of the block if it exists
-    item_index = self.blocks.index(item)
-
-    # Remove that block from our blocks_list
-    blocks.pop(item_index)
-
-    # Update our original blocks list
-    self.blocks = blocks
-    
-    return item
-
-  # Handle missed block
-  def handle_missed_block(self, block):
-    image = pygame.Surface(
-        [self.game_manager.width, self.game_manager.height],
-        pygame.SRCALPHA,
-        32)
-
-    block.sprite = image
-    block.touching_ground = True
-
-    return block
 
   # Decide if it is time
   # to spawn the next block

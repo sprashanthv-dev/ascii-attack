@@ -1,6 +1,9 @@
 import pygame
 
 from singleton import Singleton
+from block import Block
+from destroy_block import DestroyBlock
+from handle_commands import HandleCommands
 from score_calculator import ScoreCalculator
 from game_over_screen import GameOverScreen
 
@@ -147,7 +150,16 @@ class UIManager(metaclass=Singleton):
               each_block.block_number) == int(block.block_number),
               block_manager.blocks)
           
-          block_manager.remove_block(filtered_block, block_manager.blocks)
+          try:
+            item: Block = next(filtered_block)
+            command_handler = HandleCommands()
+            command_handler.execute(DestroyBlock(item, self.game_manager, block_manager))
+          
+          # If no block exists with the specified ascii value
+          except StopIteration:
+            print("No item exists")
+          
+          # block_manager.remove_block(filtered_block, block_manager.blocks)
           level_manager.block_miss_sound.play()
           
           self.current_misses += 1       
