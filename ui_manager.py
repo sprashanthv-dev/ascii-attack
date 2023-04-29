@@ -126,49 +126,50 @@ class UIManager(metaclass=Singleton):
   def render_blocks(self, level_manager, block_manager):
     self.missed_count = level_manager.misses_left 
         
-    # Render each block on the screen
-    for block in block_manager.blocks:
-      self.game_manager.screen.blit(
-          block.sprite,
-          (block.x_pos, block.y_pos)
-      )
-          
-      # Update block's y_coordinate so that
-      # it moves down at a constant speed
-      if block_manager.can_block_move(block) and self.current_misses < level_manager.misses_left:
-        block.y_pos += block.speed
-      else:
-           
-        # Remove the block from the game, if it is
-        # touching the bottom of the game window
-        if block_manager.is_touching_ground(block) and not block.touching_ground:
-          
-          block.touching_ground = True
+    if not self.game_manager.game_over:
+    
+      # Render each block on the screen
+      for block in block_manager.blocks:
+        self.game_manager.screen.blit(
+            block.sprite,
+            (block.x_pos, block.y_pos)
+        )
+            
+        # Update block's y_coordinate so that
+        # it moves down at a constant speed
+        if block_manager.can_block_move(block) and self.current_misses < level_manager.misses_left:
+          block.y_pos += block.speed
+        else:
+            
+          # Remove the block from the game, if it is
+          # touching the bottom of the game window
+          if block_manager.is_touching_ground(block) and not block.touching_ground:
+            
+            block.touching_ground = True
 
-          # Since the block is missed, remove it from the blocks list
-          filtered_block = filter(lambda each_block: int(
-              each_block.block_number) == int(block.block_number),
-              block_manager.blocks)
-          
-          try:
-            item: Block = next(filtered_block)
-            command_handler = HandleCommands()
-            command_handler.execute(DestroyBlock(item, self.game_manager, block_manager))
-          
-          # If no block exists with the specified ascii value
-          except StopIteration:
-            print("No item exists")
-          
-          # block_manager.remove_block(filtered_block, block_manager.blocks)
-          level_manager.block_miss_sound.play()
-          
-          self.current_misses += 1       
-          
-          # Check game over condition
-          # TODO: Restrict destroying blocks when game is over
-          if self.current_misses >= level_manager.misses_left:
-            game_over = GameOverScreen(self.game_manager, self, "Game Over")
-            game_over.load_game_over_ui()
+            # Since the block is missed, remove it from the blocks list
+            filtered_block = filter(lambda each_block: int(
+                each_block.block_number) == int(block.block_number),
+                block_manager.blocks)
+            
+            try:
+              item: Block = next(filtered_block)
+              command_handler = HandleCommands()
+              command_handler.execute(DestroyBlock(item, self.game_manager, block_manager))
+            
+            # If no block exists with the specified ascii value
+            except StopIteration:
+              print("No item exists")
+            
+            # block_manager.remove_block(filtered_block, block_manager.blocks)
+            level_manager.block_miss_sound.play()
+            
+            self.current_misses += 1       
+            
+            # Check game over condition
+            # TODO: Restrict destroying blocks when game is over
+            if self.current_misses >= level_manager.misses_left:
+              self.game_manager.game_over = True
     
     # Update blocks_left count on the ui
     blocks_left = level_manager.total_blocks - level_manager.spawned_blocks
@@ -179,8 +180,9 @@ class UIManager(metaclass=Singleton):
     self.render_main_screen_ui(level_manager, block_manager)   
     
   def draw_rect(self,
+                game_surface: pygame.surface.Surface,
                 title_surface: pygame.surface.Surface,
                 height: int) -> None:
-    width = self.game_manager.screen.get_width() // 2
+    width = game_surface.get_width() // 2
     title_rect = title_surface.get_rect(center=(width, height))
-    self.game_manager.screen.blit(title_surface, title_rect)
+    game_surface.blit(title_surface, title_rect)

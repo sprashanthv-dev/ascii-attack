@@ -13,6 +13,7 @@ class LevelManager(metaclass=Singleton):
     def __init__(self, game_manager):
         self.__level_number = 0
         self.__level_cleared = False
+        self.__is_bg_music_active = False
         
         # TODO: Reset back to 10 after testing
         self.__max_levels = 2
@@ -27,7 +28,7 @@ class LevelManager(metaclass=Singleton):
 
         self.__text_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 20)
         self.__message_font = pygame.font.Font('./assets/fonts/SuperMario256.ttf', 64)
-        
+                
         self.__block_hit_sound = mixer.Sound('./assets/sounds/block_hit.mp3')
         self.__block_miss_sound = mixer.Sound('./assets/sounds/block_miss.wav')
         self.__level_complete_sound = mixer.Sound('./assets/sounds/level_complete.wav')
@@ -67,6 +68,10 @@ class LevelManager(metaclass=Singleton):
     def message_font(self):
         return self.__message_font
     
+    @property
+    def is_bg_music_active(self):
+        return self.__is_bg_music_active
+     
     @property
     def block_hit_sound(self):
         return self.__block_hit_sound
@@ -110,6 +115,10 @@ class LevelManager(metaclass=Singleton):
     @property
     def block_manager(self):
         return self.__block_manager
+    
+    @is_bg_music_active.setter
+    def is_bg_music_active(self, value: bool):
+        self.__is_bg_music_active = value
 
     @level_number.setter
     def level_number(self, value: int):
@@ -141,9 +150,16 @@ class LevelManager(metaclass=Singleton):
         
         # Calculate total blocks spawned in the current level
         self.total_blocks = self.level_number * self.block_multiplier
+                        
+        if not self.is_bg_music_active:
+            mixer.music.load('./assets/sounds/in_game.mp3')
+            mixer.music.set_volume(0.5)
+            mixer.music.play(-1)
+            self.is_bg_music_active = True
 
         # Render main screen ui elements
-        self.setup_level_ui()     
+        if not self.game_manager.game_over and not self.game_manager.quit_game:
+            self.setup_level_ui()     
 
     def setup_level_ui(self):
         block_created = False
@@ -161,13 +177,13 @@ class LevelManager(metaclass=Singleton):
         # Time to delay in milliseconds
         delay_timer = 3000
 
-        while not self.level_cleared:
+        while not self.level_cleared and not self.game_manager.game_over and not self.game_manager.quit_game:
             
             self.handle_interactions()
             
             current_timer = pygame.time.get_ticks()
 
-            if not self.level_cleared:
+            if not self.level_cleared and not self.game_manager.quit_game:
                 # Change background color
                 self.game_manager.screen.fill((246, 241, 241))
 
@@ -222,7 +238,10 @@ class LevelManager(metaclass=Singleton):
                     # Indicate that the level is cleared
                     self.level_cleared = True
                     
-            if not self.level_cleared:
+            if (not self.level_cleared) and (
+                not self.game_manager.game_over) and (
+                not self.game_manager.quit_game
+            ):
                 # Update the display
                 pygame.display.update()
 
@@ -232,7 +251,7 @@ class LevelManager(metaclass=Singleton):
             # If the player clicks on cross icon in toolbar
             # Or if the player clicks on the quit button
             if event.type == pygame.QUIT:
-                self.game_manager.game_over = True
+                self.game_manager.quit_game = True
             if event.type == pygame.KEYDOWN:
                 keys = pygame.key.get_pressed()
                 

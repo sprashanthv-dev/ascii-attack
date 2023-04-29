@@ -22,6 +22,7 @@ class GameManager(metaclass=Singleton):
         # Assign to self object
         self.__game_over = False
         self.__game_started = False
+        self.__quit_game = False
 
         self.__width = 1024
         self.__height = 768
@@ -59,6 +60,10 @@ class GameManager(metaclass=Singleton):
     @property
     def game_over(self):
         return self.__game_over
+    
+    @property
+    def quit_game(self):
+        return self.__quit_game
 
     @property
     def level_manager(self):
@@ -85,11 +90,15 @@ class GameManager(metaclass=Singleton):
     @game_over.setter
     def game_over(self, value: bool):
         self.__game_over = value
-        self.handle_quit_game()
 
     @game_started.setter
     def game_started(self, value: bool):
         self.__game_started = value
+        
+    @quit_game.setter
+    def quit_game(self, value: bool):
+        self.__quit_game = value
+        self.handle_quit_game()
 
     @level_manager.setter
     def level_manager(self, value: LevelManager):
@@ -118,14 +127,7 @@ class GameManager(metaclass=Singleton):
         self.ui_manager = UIManager(self)
 
         # Create the game window
-        screen = pygame.display.set_mode((self.width, self.height))
-
-        # Modify game title
-        pygame.display.set_caption(self.__title)
-
-        # Modify game icon
-        icon = pygame.image.load('./assets/img/title_icon.png')
-        pygame.display.set_icon(icon)
+        screen = self.init_game_window()
 
         # Store a reference to the game screen
         # to access it later
@@ -140,7 +142,7 @@ class GameManager(metaclass=Singleton):
         # Time to delay in milliseconds
         delay_timer = 3000
 
-        while not self.game_over:
+        while not self.game_over and not self.quit_game:
 
             self.show_loading_screen()
 
@@ -153,7 +155,7 @@ class GameManager(metaclass=Singleton):
                 # Close the game window when the
                 # player presses the close button
                 if event.type == pygame.QUIT:
-                    self.game_over = True
+                    self.quit_game = True
 
             current_time = pygame.time.get_ticks()
 
@@ -168,6 +170,24 @@ class GameManager(metaclass=Singleton):
                 self.welcome_screen = welcome_screen
 
             self.update_display()
+         
+        if not self.quit_game:   
+            game_over = GameOverScreen(self, self.ui_manager, "Game Over")
+            game_over.load_game_over_ui()
+        
+    def init_game_window(self) -> pygame.surface.Surface:
+        
+        # Create the game window
+        screen = pygame.display.set_mode((self.width, self.height))
+
+        # Modify game title
+        pygame.display.set_caption(self.__title)
+
+        # Modify game icon
+        icon = pygame.image.load('./assets/img/title_icon.png')
+        pygame.display.set_icon(icon)
+        
+        return screen
 
     def show_loading_screen(self, msg: str = ""):
 
@@ -234,7 +254,8 @@ class GameManager(metaclass=Singleton):
                     game_over.load_game_over_ui()
 
     def handle_quit_game(self):
-        pygame.quit()
+        if self.quit_game:
+            pygame.quit()
 
     def handle_view_rules(self):
         # Load the view rules page
@@ -250,6 +271,6 @@ class GameManager(metaclass=Singleton):
         return current - start >= delay
 
     def update_display(self):
-        if not self.game_over:
+        if not self.game_over and not self.quit_game:
             # Update the display continuously
             pygame.display.update()

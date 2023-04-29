@@ -71,18 +71,18 @@ class Leaderboard:
                             button_x,
                             button_y)
             
-        while not self.game_manager.game_over:
+        while not self.game_manager.game_over and not self.game_manager.quit_game:
     
           for event in pygame.event.get():
 
             # If the player clicks on cross icon in toolbar
             # Or if the player clicks on the quit button
             if event.type == pygame.QUIT:
-                self.game_manager.game_over = True
+                self.game_manager.quit_game = True
             elif event.type == pygame.MOUSEBUTTONDOWN and back_button.is_clicked(event):
                 pass
 
-            if not self.game_manager.game_over:
+            if not self.game_manager.game_over and not self.game_manager.quit_game:
               # Change background color
               self.game_manager.screen.fill((255, 255, 255))
 

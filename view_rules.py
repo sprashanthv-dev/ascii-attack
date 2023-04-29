@@ -36,14 +36,14 @@ class ViewRules:
                            button_x,
                            button_y)
 
-      while not self.game_manager.game_over:
+      while not self.game_manager.game_over and not self.game_manager.quit_game:
 
           for event in pygame.event.get():
 
             # If the player clicks on cross icon in toolbar
             # Or if the player clicks on the quit button
             if event.type == pygame.QUIT:
-                self.game_manager.game_over = True
+                self.game_manager.quit_game = True
 
             elif event.type == pygame.MOUSEBUTTONDOWN and back_button.is_clicked(event):
                 # Handle "Back" button click by returning to Welcome Screen
@@ -54,7 +54,7 @@ class ViewRules:
                 welcome_screen.draw()
                 welcome_screen.handle_interactions()
 
-            if not self.game_manager.game_over and not back_button_clicked:
+            if not self.game_manager.game_over and not back_button_clicked and not self.game_manager.quit_game:
               # Change background color
               self.game_manager.screen.fill((255, 255, 255))
 
@@ -63,7 +63,7 @@ class ViewRules:
               # Render "Back" button on the screen
               back_button.draw()
 
-          if not self.game_manager.game_over:
+          if not self.game_manager.game_over and not self.game_manager.quit_game:
             pygame.display.update()
 
   def load_instructions(self):

@@ -60,7 +60,7 @@ class WelcomeScreen:
             # If the player clicks on cross icon in toolbar
             # Or if the player clicks on the quit button
             if event.type == QUIT or self.quit_game.is_clicked(event):
-                self.game_manager.game_over = True
+                self.game_manager.quit_game = True
             if self.start_game.is_clicked(event):
                 # Start timer
                 start_timer = pygame.time.get_ticks()
