@@ -34,6 +34,8 @@ class Leaderboard:
             for score in scores_json:
                 scores.append(Score(score['name'], score['score']))
                 
+            scores = sorted(scores, key=lambda x: x.score, reverse=True)
+ 
             return scores
 
     def save_scores(self):
@@ -47,6 +49,7 @@ class Leaderboard:
             json.dump(scores_json, f)
 
     def add_score(self, name, score):
+        self.scores = self.load_scores()
         self.scores.append(Score(name, score))
         self.scores = self.sort_scores()
         self.save_scores()
@@ -144,7 +147,7 @@ class Leaderboard:
         
     
 # leaderboard = Leaderboard()
-# leaderboard.add_score("Ashwin", 1000) // call this when the game is over and need to check how player can enter his name to the function
+# leaderboard.add_score("Ashwin", 100) # call this when the game is over and need to check how player can enter his name to the function
 # sorted_scores = leaderboard.load_scores()
 # for i, score in enumerate(sorted_scores):
 #     print(f"{i+1}. {score.name} - {score.score}")

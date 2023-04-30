@@ -94,7 +94,7 @@ class GameOverScreen(metaclass=Singleton):
         self.screen = self.get_game_screen()
 
         # Need to write logic to get the exact score of player after game over
-        input_text = self.text_font.render("Enter your name:", True, (0, 0, 0))
+        input_text = self.text_font.render("Enter your name", True, (0, 0, 0))
         input_rect = input_text.get_rect(center=(width // 2, 400))
 
         # Create the Quit and Restart buttons
@@ -110,13 +110,19 @@ class GameOverScreen(metaclass=Singleton):
         # Add Restart button in bottom left corner
         restart_button = self.create_button(
             "Restart", restart_button_x, button_y)
-
+        
         while self.game_over_active:
             for event in pygame.event.get():
-                # If the player clicks on cross icon in toolbar
-                # Or if the player clicks on the quit button
+            # If the player clicks on cross icon in toolbar
+            # Or if the player clicks on the quit button
                 if event.type == pygame.QUIT:
                     self.game_over_active = False
+                # Check if the mouse click was on the quit button
+                elif quit_button.is_clicked(event):
+                    self.game_over_active = False
+                    self.handle_quit_game()
+                elif restart_button.is_clicked(event):
+                    self.handle_restart_game()
                 # If the player types a key
                 elif event.type == pygame.KEYDOWN:
                     # If the key is a letter, add it to the name
@@ -130,7 +136,7 @@ class GameOverScreen(metaclass=Singleton):
                         if len(self.name) > 0:
                             self.handle_input_field()
                             self.is_input_entered = True
-
+                
             if self.game_over_active:
                 self.screen.fill((255, 255, 255))
                 # self.game_manager.screen.fill((255, 255, 255))
@@ -149,9 +155,14 @@ class GameOverScreen(metaclass=Singleton):
                 self.ui_manager.draw_rect(self.screen, score_text, 300)
 
                 # Render input text and name on the screen
-                self.screen.blit(input_text, input_rect)
-
                 name_text = self.text_font.render(self.name, True, (0, 0, 0))
+                input_rect = pygame.Rect((width - 400) // 2, 400, 400, 80)
+                pygame.draw.rect(self.screen, (0, 0, 0), input_rect, 2)
+
+                input_rect.x += 5
+                input_rect.y -= 50
+                
+                self.screen.blit(input_text, input_rect)
                 self.ui_manager.draw_rect(self.screen, name_text, 450)
 
                 # Draw the Quit and Restart buttons on the screen
@@ -180,3 +191,7 @@ class GameOverScreen(metaclass=Singleton):
     def handle_input_field(self):
         if not self.is_input_entered:
             self.game_manager.add_to_leaderboard()
+            
+    def handle_restart_game(self):
+        # print("going to game manager for restarting game")
+        self.game_manager.restart_game()

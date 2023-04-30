@@ -37,6 +37,7 @@ class GameManager(metaclass=Singleton):
         self.__block_manager = None
         self.__welcome_screen = None
         self.__game_over_ref = None
+        self.__leaderboard = None
 
         self.__setup()
         self.start()
@@ -89,6 +90,11 @@ class GameManager(metaclass=Singleton):
     @property
     def welcome_screen(self):
         return self.__welcome_screen
+    
+    @property
+    def leaderboard(self):
+        return self.__leaderboard
+
 
     # Allow game over attribute
     # to be changed through setter
@@ -125,6 +131,10 @@ class GameManager(metaclass=Singleton):
     def game_over_ref(self, value: GameOverScreen):
         self.__game_over_ref = value
 
+    @leaderboard.setter
+    def leaderboard(self, value: Leaderboard):
+        self.__leaderboard = value
+        
     def __setup(self):
 
         # Initialize pygame library
@@ -195,7 +205,8 @@ class GameManager(metaclass=Singleton):
                 # Add to leaderboard here
                 print("Name entered and quit button pressed")
                 print("Adding to leaderboard .....")
-                pass
+                leaderboard = Leaderboard(self)
+                leaderboard.add_score(self.game_over_ref.name, self.game_over_ref.player_score)
         
     def init_game_window(self) -> pygame.surface.Surface:
         
@@ -284,9 +295,12 @@ class GameManager(metaclass=Singleton):
         # game_manager - self, 
         # player score - self.game_over.player_score, 
         # player_name = self.game_over.name
+        
         if len(self.game_over_ref.name) > 0:
             print("Inside add to leaderboard - game manager")
             print(f"Name added: {self.game_over_ref.name} with score : {self.game_over_ref.player_score}")
+            leaderboard = Leaderboard(self)
+            leaderboard.add_score(self.game_over_ref.name, self.game_over_ref.player_score)
 
     def handle_quit_game(self):
         if self.quit_game:
@@ -309,3 +323,12 @@ class GameManager(metaclass=Singleton):
         if not self.game_over and not self.quit_game:
             # Update the display continuously
             pygame.display.update()
+            
+    def restart_game(self):
+        # print("restarting game")
+        self.level_manager.level_number = 0
+        self.game_over = False
+        #TODO: Reset game score
+        start_timer = pygame.time.get_ticks()   
+        level_number = self.level_manager.level_number + 1
+        self.handle_game_start(start_timer, True, "Level " + str(level_number))
