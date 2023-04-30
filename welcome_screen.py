@@ -53,7 +53,6 @@ class WelcomeScreen:
         self.view_leaderboard = Button(self.screen, "Leaderboard", button_params["x"], button_params["y"] + 2 * button_params["spacing"])
         self.quit_game = Button(self.screen, "Quit", button_params["x"], button_params["y"] + 3 * button_params["spacing"])
         
-    # TODO: Observer pattern implementation here ??
     def handle_interactions(self):   
         for event in pygame.event.get():
             

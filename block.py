@@ -1,6 +1,14 @@
 import pygame
 
-class Block:
+from block_interface import BlockInterface
+
+
+class Block(BlockInterface):
+  
+  """
+    Implements interface BlockInterface
+  """
+  
   def __init__(self):
     self.__sprite = None
     self.__x_pos = 0
@@ -43,7 +51,7 @@ class Block:
   @property
   def touching_ground(self):
     return self.__touching_ground
-  
+
   @property
   def block_number(self):
     return self.__block_number
@@ -79,10 +87,13 @@ class Block:
   @touching_ground.setter
   def touching_ground(self, value: bool):
     self.__touching_ground = value
-    
+
   @block_number.setter
   def block_number(self, value: int):
     self.__block_number = value
+    
+  def get_hits(self):
+    return self
 
   def __repr__(self):
       return f"{self.__class__.__name__} (\

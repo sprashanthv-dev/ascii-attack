@@ -165,7 +165,6 @@ class GameManager(metaclass=Singleton):
 
             self.show_loading_screen()
 
-            # TODO : Move to an event manager class ??
             # Get a list of events happening within the game window
             events = pygame.event.get()
 
@@ -241,7 +240,6 @@ class GameManager(metaclass=Singleton):
     def handle_game_start(self, start_timer: int, value: bool, msg: str = ""):
         self.game_started = value if self.level_manager.level_number == 0 else self.game_started
 
-        # TODO: Refactor delay to a method
         # Time to delay in milliseconds
         delay_timer = 4000
         delay_done = False

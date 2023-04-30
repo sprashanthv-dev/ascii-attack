@@ -21,7 +21,6 @@ class LevelManager(metaclass=Singleton):
         # TODO: Get from game manager
         self.__high_score = 0
 
-        # TODO: Get from block manager
         self.__blocks_left = 0
 
         self.__misses_left = 3
@@ -165,10 +164,8 @@ class LevelManager(metaclass=Singleton):
         block_created = False
         is_level_sound_played = False
 
-        # TODO: Reset for each new level
         self.spawned_blocks = 0
 
-        # TODO: Reset block list at start of each level
         self.block_manager.blocks = []
 
         # Start timer
