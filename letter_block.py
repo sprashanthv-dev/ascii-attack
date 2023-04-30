@@ -43,5 +43,7 @@ class LetterBlock(Block):
     block.speed = (self.level_manager.level_number * speed_multiplier) + y_speed
     block.point = 1
     block.block_number = str(self.block_number)
+    
+    block.special_block = True if self.block_number >= 36 else False
 
     return block

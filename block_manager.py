@@ -1,4 +1,3 @@
-import pygame
 import random
 from destroy_block import DestroyBlock
 
@@ -9,6 +8,8 @@ from letter_block_factory import LetterBlockFactory
 from number_block_factory import NumberBlockFactory
 
 from block import Block
+from block_hits import BlockHits
+
 from score_calculator import ScoreCalculator
 from handle_commands import HandleCommands
 
@@ -67,7 +68,7 @@ class BlockManager(metaclass=Singleton):
 
   # Create a block and return it
   def create_block(self) -> Block:
-    random_number = random.randint(0, 35)
+    random_number = random.randint(0, 45)
 
     # Get the corressponding block
     # factory based on random number
@@ -75,6 +76,10 @@ class BlockManager(metaclass=Singleton):
 
     # Create the block
     block = block_factory.create_block()
+    
+    # Decorate the block to get the number of hits
+    block = BlockHits(block)
+    block = block.get_hits()
 
     self.blocks.append(block)
 
@@ -106,6 +111,7 @@ class BlockManager(metaclass=Singleton):
 
     # Store a reference of the current blocks in the game
     blocks = self.blocks
+    item: Block = None
 
     # Reference: https://stackoverflow.com/questions/598398/searching-a-list-of-objects-in-python
     # Check if a block exists with the ascii value specified
@@ -114,18 +120,35 @@ class BlockManager(metaclass=Singleton):
 
     # Reference: https://stackoverflow.com/questions/68186924/how-do-i-check-if-a-filter-returns-no-results-in-python-3
     try:
-      item: Block = next(block)
-      
-      command_handler = HandleCommands()
-      command_handler.execute(DestroyBlock(item, self.game_manager, self))
-      
-      # Update the player's current score
-      self.score_calculator.score += item.point
-            
+      item = next(block)
     # If no block exists with the specified ascii value
     except StopIteration:
-        print("No item exists")
 
+      block_number = (ascii_value - base) + 26
+
+      # Check if the block is a special block
+      block: Block = filter(lambda block: int(
+          block.block_number) == block_number, blocks)
+
+      try:
+        item = next(block)
+      except StopIteration:
+        print("No item exists and not a special block")
+        
+    finally:
+      if item is not None:
+        # Get index of the current block
+        item.hits_left = item.hits_left - 1
+        
+        # Update the player's current score
+        self.score_calculator.score += item.point
+        
+        if item.hits_left == 0:
+          command_handler = HandleCommands()
+          command_handler.execute(DestroyBlock(item, self.game_manager, self))  
+      else:
+        print("Item is none")
+      
   # Decide if it is time
   # to spawn the next block
   def spawn_next_block(self, timer_info, spawned_blocks: int, total_blocks: int) -> bool:

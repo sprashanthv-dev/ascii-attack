@@ -16,7 +16,7 @@ class LevelManager(metaclass=Singleton):
         self.__is_bg_music_active = False
         
         # TODO: Reset back to 10 after testing
-        self.__max_levels = 2
+        self.__max_levels = 5
 
         # TODO: Get from game manager
         self.__high_score = 0
@@ -172,7 +172,7 @@ class LevelManager(metaclass=Singleton):
         start_timer = pygame.time.get_ticks()
 
         # Time to delay in milliseconds
-        delay_timer = 3000
+        delay_timer = 2200 - (self.level_number * 200)
 
         while not self.level_cleared and not self.game_manager.game_over and not self.game_manager.quit_game:
             
