@@ -36,6 +36,7 @@ class GameManager(metaclass=Singleton):
         self.__ui_manager = None
         self.__block_manager = None
         self.__welcome_screen = None
+        self.__game_over_ref = None
 
         self.__setup()
         self.start()
@@ -76,6 +77,10 @@ class GameManager(metaclass=Singleton):
     @property
     def block_manager(self):
         return self.__block_manager
+    
+    @property
+    def game_over_ref(self):
+        return self.__game_over_ref
 
     @property
     def title(self):
@@ -115,6 +120,10 @@ class GameManager(metaclass=Singleton):
     @welcome_screen.setter
     def welcome_screen(self, value: WelcomeScreen):
         self.__welcome_screen = value
+        
+    @game_over_ref.setter
+    def game_over_ref(self, value: GameOverScreen):
+        self.__game_over_ref = value
 
     def __setup(self):
 
@@ -172,8 +181,21 @@ class GameManager(metaclass=Singleton):
             self.update_display()
          
         if not self.quit_game:   
-            game_over = GameOverScreen(self, self.ui_manager, "Game Over")
-            game_over.load_game_over_ui()
+            game_over = GameOverScreen(self, self.ui_manager, "Game Over") if\
+                self.game_over_ref is None else self.game_over_ref
+            
+            if self.game_over_ref is None:
+                self.game_over_ref = game_over
+                
+            self.game_over_ref.load_game_over_ui()
+            
+            # Add to leaderboard if name was entered
+            # and then quit was pressed
+            if len(self.game_over_ref.name) > 0 and not self.game_over_ref.is_input_entered:
+                # Add to leaderboard here
+                print("Name entered and quit button pressed")
+                print("Adding to leaderboard .....")
+                pass
         
     def init_game_window(self) -> pygame.surface.Surface:
         
@@ -250,8 +272,21 @@ class GameManager(metaclass=Singleton):
                         start_timer, True, "Level " + str(level_number))
                 else:
                     print("Max level reached")
-                    game_over = GameOverScreen(self, self.ui_manager, "Game Completed!!!")
-                    game_over.load_game_over_ui()
+                    game_over = GameOverScreen(self, self.ui_manager, "Game Completed!!!") if self.game_over_ref is None else self.game_over_ref
+                    
+                    if self.game_over_ref is None:
+                        self.game_over_ref = game_over
+                    
+                    self.game_over_ref.load_game_over_ui()
+                    
+    def add_to_leaderboard(self):
+        # Add to leaderboard here
+        # game_manager - self, 
+        # player score - self.game_over.player_score, 
+        # player_name = self.game_over.name
+        if len(self.game_over_ref.name) > 0:
+            print("Inside add to leaderboard - game manager")
+            print(f"Name added: {self.game_over_ref.name} with score : {self.game_over_ref.player_score}")
 
     def handle_quit_game(self):
         if self.quit_game:

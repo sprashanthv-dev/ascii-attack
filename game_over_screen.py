@@ -1,28 +1,30 @@
 import pygame
 from score_calculator import ScoreCalculator
-# from leaderboard import Leaderboard
 
 from button import Button
+from singleton import Singleton
 
 
-class GameOverScreen:
+class GameOverScreen(metaclass=Singleton):
     def __init__(self, game_manager, ui_manager, title_text: str):
         pygame.init()
 
         self.__game_manager = game_manager
         self.__ui_manager = ui_manager
         self.__title_text = title_text
-        self.__game_over_active = True
         self.__screen = None
+
+        self.__name = ''
+        self.__game_over_active = True
+        self.__button_padding = 10
+        self.__is_input_entered = False
+
+        self.__player_score = ScoreCalculator().score
 
         self.__title_font = pygame.font.Font(
             "./assets/fonts/SuperMario256.ttf", 72)
         self.__text_font = pygame.font.Font(
             "./assets/fonts/SuperMario256.ttf", 32)
-        
-        self.__button_padding = 10
-
-        self.__player_score = ScoreCalculator().score
 
     @property
     def game_manager(self):
@@ -31,7 +33,7 @@ class GameOverScreen:
     @property
     def ui_manager(self):
         return self.__ui_manager
-    
+
     @property
     def screen(self):
         return self.__screen
@@ -51,7 +53,7 @@ class GameOverScreen:
     @property
     def player_score(self):
         return self.__player_score
-    
+
     @property
     def button_padding(self):
         return self.__button_padding
@@ -59,6 +61,14 @@ class GameOverScreen:
     @property
     def game_over_active(self):
         return self.__game_over_active
+
+    @property
+    def is_input_entered(self):
+        return self.__is_input_entered
+
+    @property
+    def name(self):
+        return self.__name
 
     @screen.setter
     def screen(self, screen: pygame.surface.Surface):
@@ -69,21 +79,28 @@ class GameOverScreen:
         self.__game_over_active = value
         self.handle_quit_game()
 
+    @name.setter
+    def name(self, value: str):
+        self.__name = value
+
+    @is_input_entered.setter
+    def is_input_entered(self, value: bool):
+        self.__is_input_entered = value
+
     def load_game_over_ui(self):
         width = self.game_manager.width
         height = self.game_manager.height
-        
+
         self.screen = self.get_game_screen()
 
         # Need to write logic to get the exact score of player after game over
-        name = ''
         input_text = self.text_font.render("Enter your name:", True, (0, 0, 0))
         input_rect = input_text.get_rect(center=(width // 2, 400))
 
         # Create the Quit and Restart buttons
         # Assign button positions
         button_y = height - 150 - self.button_padding
-        
+
         quit_button_x = width - 200 - self.button_padding
         restart_button_x = 50 + self.button_padding
 
@@ -91,7 +108,8 @@ class GameOverScreen:
         quit_button = self.create_button("Quit", quit_button_x, button_y)
 
         # Add Restart button in bottom left corner
-        restart_button = self.create_button("Restart", restart_button_x, button_y)
+        restart_button = self.create_button(
+            "Restart", restart_button_x, button_y)
 
         while self.game_over_active:
             for event in pygame.event.get():
@@ -103,14 +121,15 @@ class GameOverScreen:
                 elif event.type == pygame.KEYDOWN:
                     # If the key is a letter, add it to the name
                     if event.unicode.isalpha():
-                        name += event.unicode
+                        self.name += event.unicode
                     # If the key is the backspace key, remove the last letter from the name
                     elif event.key == pygame.K_BACKSPACE:
-                        name = name[:-1]
+                        self.name = self.name[:-1]
                     # If the key is the enter key, store the name and go back to the main menu
                     elif event.key == pygame.K_RETURN:
-                        self.game_manager.player_name = name
-                        self.game_manager.game_over = True
+                        if len(self.name) > 0:
+                            self.handle_input_field()
+                            self.is_input_entered = True
 
             if self.game_over_active:
                 self.screen.fill((255, 255, 255))
@@ -132,32 +151,32 @@ class GameOverScreen:
                 # Render input text and name on the screen
                 self.screen.blit(input_text, input_rect)
 
-                name_text = self.text_font.render(name, True, (0, 0, 0))
+                name_text = self.text_font.render(self.name, True, (0, 0, 0))
                 self.ui_manager.draw_rect(self.screen, name_text, 450)
-                
-                # Add the name and score to highscores.json file
-                # leaderboard = Leaderboard(game_manager)
-                # leaderboard.add_score(name, player_score)
 
                 # Draw the Quit and Restart buttons on the screen
                 quit_button.draw()
                 restart_button.draw()
 
                 pygame.display.update()
-                                
+
     def get_game_screen(self) -> pygame.surface.Surface:
         screen: pygame.surface.Surface
-        
+
         if self.game_manager.game_over:
             screen = self.game_manager.init_game_window()
         else:
             screen = self.game_manager.screen
-            
+
         return screen
-    
+
     def create_button(self, text: str, x_coord: int, y_coord: int) -> Button:
         return Button(self.screen, text, x_coord, y_coord)
-    
+
     def handle_quit_game(self):
         if not self.game_over_active:
             pygame.quit()
+            
+    def handle_input_field(self):
+        if not self.is_input_entered:
+            self.game_manager.add_to_leaderboard()
