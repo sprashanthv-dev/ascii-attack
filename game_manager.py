@@ -14,6 +14,7 @@ from view_rules import ViewRules
 from welcome_screen import WelcomeScreen
 from game_over_screen import GameOverScreen
 from leaderboard import Leaderboard
+from score_calculator import ScoreCalculator
 
 
 class GameManager(metaclass=Singleton):
@@ -23,6 +24,7 @@ class GameManager(metaclass=Singleton):
         self.__game_over = False
         self.__game_started = False
         self.__quit_game = False
+        self.__level_loaded = False
 
         self.__width = 1024
         self.__height = 768
@@ -66,6 +68,10 @@ class GameManager(metaclass=Singleton):
     @property
     def quit_game(self):
         return self.__quit_game
+    
+    @property
+    def level_loaded(self):
+        return self.__level_loaded
 
     @property
     def level_manager(self):
@@ -110,6 +116,10 @@ class GameManager(metaclass=Singleton):
     def quit_game(self, value: bool):
         self.__quit_game = value
         self.handle_quit_game()
+        
+    @level_loaded.setter
+    def level_loaded(self, value: bool):
+        self.__level_loaded = value
 
     @level_manager.setter
     def level_manager(self, value: LevelManager):
@@ -190,6 +200,9 @@ class GameManager(metaclass=Singleton):
             self.update_display()
          
         if not self.quit_game:   
+            
+            print("Loading game over inside not self.quit_game")
+            
             game_over = GameOverScreen(self, self.ui_manager, "Game Over") if\
                 self.game_over_ref is None else self.game_over_ref
             
@@ -286,6 +299,7 @@ class GameManager(metaclass=Singleton):
                     if self.game_over_ref is None:
                         self.game_over_ref = game_over
                     
+                    print("Loading game over inside max level reached")
                     self.game_over_ref.load_game_over_ui()
                     
     def add_to_leaderboard(self):
@@ -323,10 +337,19 @@ class GameManager(metaclass=Singleton):
             pygame.display.update()
             
     def restart_game(self):
-        # print("restarting game")
         self.level_manager.level_number = 0
         self.game_over = False
-        #TODO: Reset game score
+        self.level_loaded = False
+        
+        # Reset player score before restart
+        score_calc = ScoreCalculator()
+        score_calc.score = 0
+        
         start_timer = pygame.time.get_ticks()   
         level_number = self.level_manager.level_number + 1
         self.handle_game_start(start_timer, True, "Level " + str(level_number))
+        
+        print("Control returned to restart ....")
+        self.game_over_ref.player_score = ScoreCalculator().score
+        self.game_over_ref.name = ''
+        self.game_over_ref.is_input_entered = False

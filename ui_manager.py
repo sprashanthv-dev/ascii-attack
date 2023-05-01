@@ -5,7 +5,6 @@ from block import Block
 from destroy_block import DestroyBlock
 from handle_commands import HandleCommands
 from score_calculator import ScoreCalculator
-from game_over_screen import GameOverScreen
 
 # TODO: Check circular import issue with Game Manager
 class UIManager(metaclass=Singleton):

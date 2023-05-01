@@ -147,6 +147,12 @@ class LevelManager(metaclass=Singleton):
         # Increment level number
         self.level_number += 1
         
+        # Reset Current Misses
+        if not self.game_manager.level_loaded:
+            self.ui_manager.current_misses = 0
+            
+        self.game_manager.level_loaded = True
+                        
         # Calculate total blocks spawned in the current level
         self.total_blocks = self.level_number * self.block_multiplier
                         

@@ -2,10 +2,9 @@ import pygame
 from score_calculator import ScoreCalculator
 
 from button import Button
-from singleton import Singleton
 
 
-class GameOverScreen(metaclass=Singleton):
+class GameOverScreen():
     def __init__(self, game_manager, ui_manager, title_text: str):
         pygame.init()
 
@@ -82,6 +81,10 @@ class GameOverScreen(metaclass=Singleton):
     @name.setter
     def name(self, value: str):
         self.__name = value
+        
+    @player_score.setter
+    def player_score(self, value: int):
+        self.__player_score = value
 
     @is_input_entered.setter
     def is_input_entered(self, value: bool):
@@ -90,6 +93,9 @@ class GameOverScreen(metaclass=Singleton):
     def load_game_over_ui(self):
         width = self.game_manager.width
         height = self.game_manager.height
+        
+        print("Player score inside game_over " + str(ScoreCalculator().score))
+        print("Player score in player_score variable " + str(self.player_score))
 
         self.screen = self.get_game_screen()
 
