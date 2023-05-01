@@ -2,20 +2,36 @@ import json
 import pygame
 
 from ui_manager import UIManager
+from singleton import Singleton
+
 from button import Button
 from typing import List
+
 
 class Score:
     def __init__(self, name, score):
         self.name = name
         self.score = score
+
+    def __repr__(self):
+      return f"{self.__class__.__name__} (\
+          {self.name}, {self.score})"
         
-class Leaderboard:
+class Leaderboard(metaclass=Singleton):
     def __init__(self, game_manager):
         self.file_name = './assets/text_files/highscores.json'
-        self.scores = []
+        self.__scores = []
+        self.__high_score = 0
         self.__game_manager = game_manager
         self.__ui_manager = UIManager()
+        
+    @property
+    def high_score(self):
+        return self.__high_score
+    
+    @property
+    def scores(self):
+        return self.__scores
         
     @property
     def game_manager(self):
@@ -24,6 +40,14 @@ class Leaderboard:
     @property
     def ui_manager(self):
         return self.__ui_manager
+    
+    @high_score.setter
+    def high_score(self, value: int):
+        self.__high_score = value
+        
+    @scores.setter
+    def scores(self, values = []):
+        self.__scores = values
 
     def load_scores(self):
         with open(self.file_name, 'r') as f:
@@ -35,6 +59,8 @@ class Leaderboard:
                 scores.append(Score(score['name'], score['score']))
                 
             scores = sorted(scores, key=lambda x: x.score, reverse=True)
+            
+            self.high_score = scores[0].score
  
             return scores
 
@@ -52,6 +78,7 @@ class Leaderboard:
         self.scores = self.load_scores()
         self.scores.append(Score(name, score))
         self.scores = self.sort_scores()
+        self.high_score = self.scores[0].score
         self.save_scores()
 
     def sort_scores(self):

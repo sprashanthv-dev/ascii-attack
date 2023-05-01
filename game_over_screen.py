@@ -93,9 +93,6 @@ class GameOverScreen():
     def load_game_over_ui(self):
         width = self.game_manager.width
         height = self.game_manager.height
-        
-        print("Player score inside game_over " + str(ScoreCalculator().score))
-        print("Player score in player_score variable " + str(self.player_score))
 
         self.screen = self.get_game_screen()
 

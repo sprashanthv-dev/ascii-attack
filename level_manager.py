@@ -4,6 +4,8 @@ from pygame import mixer
 from singleton import Singleton
 from block_manager import BlockManager
 from ui_manager import UIManager
+from leaderboard import Leaderboard
+
 
 # TODO: Notify classes using game_over property when it is updated
 # TODO : Check circular import issue with GameManager
@@ -34,6 +36,7 @@ class LevelManager(metaclass=Singleton):
 
         self.__ui_manager = UIManager(game_manager)
         self.__game_manager = game_manager
+        self.__leaderboard = Leaderboard(game_manager)
 
         self.__total_blocks = 0
         self.__spawned_blocks = 0
@@ -115,6 +118,10 @@ class LevelManager(metaclass=Singleton):
     def block_manager(self):
         return self.__block_manager
     
+    @property
+    def leaderboard(self):
+        return self.__leaderboard
+    
     @is_bg_music_active.setter
     def is_bg_music_active(self, value: bool):
         self.__is_bg_music_active = value
@@ -142,10 +149,20 @@ class LevelManager(metaclass=Singleton):
     @level_cleared.setter
     def level_cleared(self, value: bool):
         self.__level_cleared = value
+        
+    @high_score.setter
+    def high_score(self, value: int):
+        self.__high_score = value
 
     def load_level(self): 
         # Increment level number
         self.level_number += 1
+       
+        if len(self.leaderboard.scores) == 0:
+            scores = self.leaderboard.load_scores()
+            self.leaderboard.scores = scores
+          
+        self.high_score = self.leaderboard.high_score
         
         # Reset Current Misses
         if not self.game_manager.level_loaded:
@@ -263,15 +280,13 @@ class LevelManager(metaclass=Singleton):
                 for i in range(0, 10):
                     if keys[pygame.K_0 + i]:
                         ascii_value = pygame.K_0 + i
-                        self.block_manager.destroy_block(ascii_value, 48)
-                        self.block_hit_sound.play()
+                        self.block_manager.destroy_block(ascii_value, 48, self.block_hit_sound)
                         
                 # Detect key presses on letter based blocks
                 for i in range(0, 26):
                     if keys[pygame.K_a + i]:
                         ascii_value = pygame.K_a + i
-                        self.block_manager.destroy_block(ascii_value + 10, 97)
-                        self.block_hit_sound.play()
+                        self.block_manager.destroy_block(ascii_value + 10, 97, self.block_hit_sound)
 
     def configure_timer(self, start_timer, current_timer, delay_timer):
         self.timer_info = {

@@ -1,3 +1,4 @@
+import pygame
 import random
 from destroy_block import DestroyBlock
 
@@ -107,7 +108,10 @@ class BlockManager(metaclass=Singleton):
     pass
 
   # Destroy the block from the game
-  def destroy_block(self, ascii_value: int, base: int):
+  def destroy_block(self,
+                    ascii_value: int,
+                    base: int,
+                    block_hit_sound: pygame.mixer.Sound):
 
     # Store a reference of the current blocks in the game
     blocks = self.blocks
@@ -142,6 +146,9 @@ class BlockManager(metaclass=Singleton):
         
         # Update the player's current score
         self.score_calculator.score += item.point
+        
+        # Play block hit sound
+        block_hit_sound.play()
         
         if item.hits_left == 0:
           command_handler = HandleCommands()
