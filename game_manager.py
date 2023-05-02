@@ -200,9 +200,7 @@ class GameManager(metaclass=Singleton):
             self.update_display()
          
         if not self.quit_game:   
-            
-            self.level_manager.is_bg_music_active = False
-            
+                        
             game_over = GameOverScreen(self, self.ui_manager, "Game Over") if\
                 self.game_over_ref is None else self.game_over_ref
             
@@ -338,7 +336,6 @@ class GameManager(metaclass=Singleton):
         self.level_manager.level_number = 0
         self.game_over = False
         self.level_loaded = False
-        self.level_manager.is_bg_music_active = False
         
         # Reset player score before restart
         score_calc = ScoreCalculator()

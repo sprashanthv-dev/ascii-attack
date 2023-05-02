@@ -171,10 +171,3 @@ class Leaderboard(metaclass=Singleton):
 
         # Blit the box surface onto the screen
         self.game_manager.screen.blit(box_surface, (box_x, box_y))
-        
-    
-# leaderboard = Leaderboard()
-# leaderboard.add_score("Ashwin", 100) # call this when the game is over and need to check how player can enter his name to the function
-# sorted_scores = leaderboard.load_scores()
-# for i, score in enumerate(sorted_scores):
-#     print(f"{i+1}. {score.name} - {score.score}")

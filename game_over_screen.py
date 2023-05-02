@@ -142,7 +142,6 @@ class GameOverScreen():
                 
             if self.game_over_active:
                 self.screen.fill((255, 255, 255))
-                # self.game_manager.screen.fill((255, 255, 255))
 
                 # Render title text on the screen
                 title_text_color = (

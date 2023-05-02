@@ -125,7 +125,6 @@ class LevelManager(metaclass=Singleton):
     @is_bg_music_active.setter
     def is_bg_music_active(self, value: bool):
         self.__is_bg_music_active = value
-        self.handle_bg_music()
 
     @level_number.setter
     def level_number(self, value: int):
@@ -250,7 +249,6 @@ class LevelManager(metaclass=Singleton):
                 
                 # Play level cleared sound
                 if not is_level_sound_played:
-                    mixer.music.pause()
                     self.level_complete_sound.play()
                     is_level_sound_played = True
                     
@@ -259,8 +257,6 @@ class LevelManager(metaclass=Singleton):
                 # Reference: https://stackoverflow.com/questions/25221036/pygame-music-pause-unpause-toggle
                 if not mixer.Channel(0).get_busy():
                     # Indicate that the level is cleared
-                    # Pause the bg music to play level cleared sound
-                    mixer.music.unpause()
                     self.level_cleared = True
                     
             if (not self.level_cleared) and (
@@ -270,11 +266,6 @@ class LevelManager(metaclass=Singleton):
                 # Update the display
                 pygame.display.update()
                                 
-            # if self.game_manager.game_over:
-            #     mixer.music.stop()
-            #     mixer.music.unload()
-            #     self.is_bg_music_active = False
-
     # Handle key stroke logic
     def handle_interactions(self):
         for event in pygame.event.get():
@@ -306,7 +297,3 @@ class LevelManager(metaclass=Singleton):
         }
 
         return self.timer_info
-    
-    def handle_bg_music(self):
-        if not self.is_bg_music_active and self.game_manager.level_loaded:
-         mixer.music.stop()
