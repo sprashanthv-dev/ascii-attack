@@ -125,6 +125,7 @@ class LevelManager(metaclass=Singleton):
     @is_bg_music_active.setter
     def is_bg_music_active(self, value: bool):
         self.__is_bg_music_active = value
+        self.handle_bg_music()
 
     @level_number.setter
     def level_number(self, value: int):
@@ -168,16 +169,16 @@ class LevelManager(metaclass=Singleton):
         if not self.game_manager.level_loaded:
             self.ui_manager.current_misses = 0
             
+        if not self.is_bg_music_active:
+            self.is_bg_music_active = True
+            mixer.music.load('./assets/sounds/in_game.mp3')
+            mixer.music.set_volume(0.5)
+            mixer.music.play(-1)
+            
         self.game_manager.level_loaded = True
                         
         # Calculate total blocks spawned in the current level
         self.total_blocks = self.level_number * self.block_multiplier
-                        
-        if not self.is_bg_music_active:
-            mixer.music.load('./assets/sounds/in_game.mp3')
-            mixer.music.set_volume(0.5)
-            mixer.music.play(-1)
-            self.is_bg_music_active = True
 
         # Render main screen ui elements
         if not self.game_manager.game_over and not self.game_manager.quit_game:
@@ -249,13 +250,17 @@ class LevelManager(metaclass=Singleton):
                 
                 # Play level cleared sound
                 if not is_level_sound_played:
+                    mixer.music.pause()
                     self.level_complete_sound.play()
                     is_level_sound_played = True
                     
                 # Wait until the sound is finished playing
                 # Reference: https://stackoverflow.com/questions/54444765/check-if-a-pygame-mixer-channel-is-playing-a-sound
+                # Reference: https://stackoverflow.com/questions/25221036/pygame-music-pause-unpause-toggle
                 if not mixer.Channel(0).get_busy():
                     # Indicate that the level is cleared
+                    # Pause the bg music to play level cleared sound
+                    mixer.music.unpause()
                     self.level_cleared = True
                     
             if (not self.level_cleared) and (
@@ -264,6 +269,11 @@ class LevelManager(metaclass=Singleton):
             ):
                 # Update the display
                 pygame.display.update()
+                                
+            # if self.game_manager.game_over:
+            #     mixer.music.stop()
+            #     mixer.music.unload()
+            #     self.is_bg_music_active = False
 
     # Handle key stroke logic
     def handle_interactions(self):
@@ -296,3 +306,7 @@ class LevelManager(metaclass=Singleton):
         }
 
         return self.timer_info
+    
+    def handle_bg_music(self):
+        if not self.is_bg_music_active and self.game_manager.level_loaded:
+         mixer.music.stop()
