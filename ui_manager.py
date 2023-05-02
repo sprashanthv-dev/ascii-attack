@@ -6,7 +6,9 @@ from destroy_block import DestroyBlock
 from handle_commands import HandleCommands
 from score_calculator import ScoreCalculator
 
-# TODO: Check circular import issue with Game Manager
+# The UIManager class is responsible for all the UI elements 
+# within the game such as rendering the various screens and 
+# handling user interactions on these elements.
 class UIManager(metaclass=Singleton):
   
   def __init__(self, game_manager):
@@ -43,6 +45,8 @@ class UIManager(metaclass=Singleton):
   def current_score(self, value: int):
     self.__current_score = value
       
+  # Returns the button placement configuration
+  # on the welcome screen of the game.
   def get_welcome_screen_button_params(self, width: int, height: int):
 
     button_params = {
@@ -56,14 +60,17 @@ class UIManager(metaclass=Singleton):
 
     return button_params
 
+  # A generic method that takes the specified font, text and (x,y) 
+  # coordinates and renders it on the game screen.
   def render_font(self, font: pygame.font.Font, x_coord: int, y_coord: int, text: str, color = (255,255,255)):
     
     if not self.game_manager.game_over:
       font_properties = font.render(text, True, color)
       
-      # Render title on the screen
+      # Render the text on the screen
       self.game_manager.screen.blit(font_properties, (x_coord, y_coord))
     
+  # Used to display paragraphs of text within the game
   def render_paragraph(self, text, font, rect, surface, color):
         # Split text into lines
         lines = text.split("\n")
@@ -90,6 +97,7 @@ class UIManager(metaclass=Singleton):
             surface.blit(line_surface, (rect.left, y))
             y += line_height
   
+  # Paints the UI elements of the main game loop.
   def render_main_screen_ui(self, level_manager, block_manager):
     x_coord = block_manager.block_x_limit
     y_coord = block_manager.y_start
@@ -122,7 +130,9 @@ class UIManager(metaclass=Singleton):
     self.render_font(font, x_coord, y_pos, "High Score: " + str(high_score), (0,0,0))
     
     
+  # Paints the created blocks on the screen
   def render_blocks(self, level_manager, block_manager):
+    # Get allowed misses
     self.missed_count = level_manager.misses_left 
         
     if not self.game_manager.game_over:
@@ -144,9 +154,12 @@ class UIManager(metaclass=Singleton):
           # touching the bottom of the game window
           if block_manager.is_touching_ground(block) and not block.touching_ground:
             
+            # Denote that the block is touching 
+            # the bottom of the game window
             block.touching_ground = True
 
             # Since the block is missed, remove it from the blocks list
+            # by invoking the DestroyBlock() command class
             filtered_block = filter(lambda each_block: int(
                 each_block.block_number) == int(block.block_number),
                 block_manager.blocks)
@@ -160,12 +173,14 @@ class UIManager(metaclass=Singleton):
             except StopIteration:
               print("No item exists")
             
-            # block_manager.remove_block(filtered_block, block_manager.blocks)
+            # Play block missed sound
             level_manager.block_miss_sound.play()
             
+            # Increment the current misses
             self.current_misses += 1       
             
             # Check game over condition
+            # If the current misses is >= allowed misses
             if self.current_misses >= level_manager.misses_left:
               self.game_manager.game_over = True
     
@@ -177,6 +192,7 @@ class UIManager(metaclass=Singleton):
     self.missed_count -= self.current_misses
     self.render_main_screen_ui(level_manager, block_manager)   
     
+  # Draw a rectangle on the game screen
   def draw_rect(self,
                 game_surface: pygame.surface.Surface,
                 title_surface: pygame.surface.Surface,

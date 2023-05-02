@@ -2,7 +2,7 @@ from block_factory import BlockFactory
 from block import Block
 from number_block import NumberBlock
 
-"""Factory that aims to provide a number block"""
+"""Factory class that provides a number block"""
 
 
 class NumberBlockFactory(BlockFactory):
@@ -24,6 +24,7 @@ class NumberBlockFactory(BlockFactory):
   def level_manager(self):
     return self.__level_manager
 
+  # Create a number block
   def create_block(self) -> Block:
     number_block = NumberBlock(self.block_number, self.block_config, self.level_manager)
     return number_block.create_block()

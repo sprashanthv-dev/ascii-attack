@@ -2,7 +2,9 @@
 from block import Block
 from command import Command
 
-
+# The DestroyBlock command class encapsulates
+# the business logic used to destroy a block
+# on a correct key press.
 class DestroyBlock(Command):
   def __init__(self, block: Block, game_manager, block_manager) -> None:
     self.block = block

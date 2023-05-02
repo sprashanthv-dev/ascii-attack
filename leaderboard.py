@@ -7,16 +7,20 @@ from singleton import Singleton
 from button import Button
 from typing import List
 
-
+# The Score class represents a score 
+# that is added to the game leaderboard.
 class Score:
     def __init__(self, name, score):
         self.name = name
         self.score = score
 
+    # Pretty print the score object
     def __repr__(self):
       return f"{self.__class__.__name__} (\
           {self.name}, {self.score})"
-        
+
+# The Leaderboard class represents the 
+# game's top 10 high scores.        
 class Leaderboard(metaclass=Singleton):
     def __init__(self, game_manager):
         self.file_name = './assets/text_files/highscores.json'
@@ -49,21 +53,25 @@ class Leaderboard(metaclass=Singleton):
     def scores(self, values = []):
         self.__scores = values
 
+    # Load leaderboard data from JSON file
     def load_scores(self):
         with open(self.file_name, 'r') as f:
-            # Load leaderboard data from JSON file
             scores_json = json.load(f)
             scores = []
             
             for score in scores_json:
                 scores.append(Score(score['name'], score['score']))
                 
+            # Sort the scores in descending order
             scores = sorted(scores, key=lambda x: x.score, reverse=True)
             
+            # Extract the high score
             self.high_score = scores[0].score
  
             return scores
 
+    # Updates the highscores.json file with 
+    # the newly added score. 
     def save_scores(self):
         with open(self.file_name, 'w') as f:
             scores_json = []
@@ -74,6 +82,7 @@ class Leaderboard(metaclass=Singleton):
             # Save updated leaderboard data back to JSON file
             json.dump(scores_json, f)
 
+    # Adds a new score to the leaderboard
     def add_score(self, name, score):
         self.scores = self.load_scores()
         self.scores.append(Score(name, score))
@@ -81,16 +90,17 @@ class Leaderboard(metaclass=Singleton):
         self.high_score = self.scores[0].score
         self.save_scores()
 
+    # Sort leaderboard data in descending order by score and get top 10 scores
     def sort_scores(self):
-        # Sort leaderboard data in descending order by score and get top 10 scores
         return sorted(self.scores, key=lambda score: score.score, reverse=True)[:10]
     
+    # Paints the Leaderboard UI on the game window
     def setup_view_leaderboard_ui(self):
         
         # Load leaderboard data from file
         scores = self.load_scores()
         
-        # Assign button position
+        # Assign button positions
         button_padding = 10
         button_x = self.game_manager.screen.get_width() - 200 - button_padding
         button_y = self.game_manager.screen.get_height() - 50 - button_padding
@@ -123,7 +133,7 @@ class Leaderboard(metaclass=Singleton):
 
               pygame.display.update()
 
-    
+    # Paints a rectangular box around the leaderboard data
     def draw_box(self, scores: List[Score]):
         # Calculate the position of the box
         box_width = 850
@@ -135,6 +145,7 @@ class Leaderboard(metaclass=Singleton):
         # Display "Leaderboard" title
         title_font = pygame.font.Font("./assets/fonts/SuperMario256.ttf", 72)
         
+        # Render leaderboard text on the game screen
         self.ui_manager.render_font(
             title_font, 
             box_x + 175, 

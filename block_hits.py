@@ -3,6 +3,9 @@ from block import Block
 
 from constants import BLOCK_NO_HITS_MAP
 
+# The BlockHits class is a specific decorator
+# that inherits from the base BlockDecorator
+# class. 
 class BlockHits(BlockDecorator):
   def __init__(self, block: Block):
     super().__init__(block)
@@ -12,6 +15,9 @@ class BlockHits(BlockDecorator):
   def block(self):
     return self.__block
     
+  # The get_hits method from the base decorator
+  # class is overridden and decorated with
+  # additional hits if the block is a special block.
   def get_hits(self) -> Block:
     
     hits_for_block: int = 0

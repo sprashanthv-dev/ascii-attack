@@ -1,8 +1,9 @@
-# Singleton inherits from type
-# thus making it a metaclass
 # Reference : https://stackoverflow.com/questions/100003/what-are-metaclasses-in-python
 # Reference : https://www.youtube.com/watch?v=Rm4JP7JfsKY
 
+# Singleton inherits from type thus making it a metaclass.
+# The Singleton class maintains a single instance of the
+# specified classes, thus demonstrating the Singleton pattern.
 class Singleton(type):
   # Maintain a dictionary of instances
   # for every class that is a singleton

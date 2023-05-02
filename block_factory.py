@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 
 from block import Block
 
-# Basic representation of a block creator
-
-
+# The BlockFactory class provides a basic representation
+# of a block creator demonstrating usage of the 
+# Factory pattern
 class BlockFactory(ABC):
 
   @property
@@ -12,6 +12,7 @@ class BlockFactory(ABC):
   def block_number(self):
     pass
 
+  # Specify the config for each block
   @property
   @abstractmethod
   def block_config(self):
@@ -24,6 +25,9 @@ class BlockFactory(ABC):
         "speed_multiplier": 0.05
     }
 
+  # This is the method that will be overridden
+  # by the corressponding factory implementations
+  # to create either a letter or number block
   @abstractmethod
   def create_block(self, block_number: int) -> Block:
     """Returns either a letter based block or a number based block."""

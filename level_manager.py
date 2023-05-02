@@ -7,24 +7,19 @@ from ui_manager import UIManager
 from leaderboard import Leaderboard
 
 
-# TODO: Notify classes using game_over property when it is updated
-# TODO : Check circular import issue with GameManager
 
-
+# The LevelManager class controls all aspects related to levels 
+# such as loading new levels, painting the level UI and updating 
+# it and interacts with block manager to manage the rendered blocks.
 class LevelManager(metaclass=Singleton):
     def __init__(self, game_manager):
         self.__level_number = 0
         self.__level_cleared = False
         self.__is_bg_music_active = False
         
-        # TODO: Reset back to 10 after testing
-        self.__max_levels = 5
-
-        # TODO: Get from game manager
+        self.__max_levels = 10
         self.__high_score = 0
-
         self.__blocks_left = 0
-
         self.__misses_left = 3
 
         self.__text_font = pygame.font.Font('./assets/fonts/NiceSugar.ttf', 20)
@@ -154,26 +149,32 @@ class LevelManager(metaclass=Singleton):
     def high_score(self, value: int):
         self.__high_score = value
 
+    # Loads a new level
     def load_level(self): 
         # Increment level number
         self.level_number += 1
        
+        # If leaderboard data has not yet been
+        # loaded, load the necessary data
         if len(self.leaderboard.scores) == 0:
             scores = self.leaderboard.load_scores()
             self.leaderboard.scores = scores
           
+        # Get the current high score
         self.high_score = self.leaderboard.high_score
         
         # Reset Current Misses
         if not self.game_manager.level_loaded:
             self.ui_manager.current_misses = 0
             
+        # If bg music is not already playing, start playing it.
         if not self.is_bg_music_active:
             self.is_bg_music_active = True
             mixer.music.load('./assets/sounds/in_game.mp3')
             mixer.music.set_volume(0.5)
             mixer.music.play(-1)
             
+        # Denote that the level has been loaded successfully.
         self.game_manager.level_loaded = True
                         
         # Calculate total blocks spawned in the current level
@@ -183,12 +184,16 @@ class LevelManager(metaclass=Singleton):
         if not self.game_manager.game_over and not self.game_manager.quit_game:
             self.setup_level_ui()     
 
+    # Paints the current level's UI elements
     def setup_level_ui(self):
         block_created = False
         is_level_sound_played = False
 
+        # Tracks the number of blocks created so far
         self.spawned_blocks = 0
 
+        # Resets the blocks created so far at the 
+        # start of each level
         self.block_manager.blocks = []
 
         # Start timer
@@ -199,6 +204,7 @@ class LevelManager(metaclass=Singleton):
 
         while not self.level_cleared and not self.game_manager.game_over and not self.game_manager.quit_game:
             
+            # Handle player interactions on keyboard
             self.handle_interactions()
             
             current_timer = pygame.time.get_ticks()
@@ -258,7 +264,9 @@ class LevelManager(metaclass=Singleton):
                 if not mixer.Channel(0).get_busy():
                     # Indicate that the level is cleared
                     self.level_cleared = True
-                    
+            
+            # If level is not cleared, game is not
+            # over and quit icon has not been clicked
             if (not self.level_cleared) and (
                 not self.game_manager.game_over) and (
                 not self.game_manager.quit_game
@@ -274,6 +282,9 @@ class LevelManager(metaclass=Singleton):
             if event.type == pygame.QUIT:
                 self.game_manager.quit_game = True
             if event.type == pygame.KEYDOWN:
+                # Returns a list of keys on a standard keyboard
+                # with True, False denoting which keys have been
+                # held down and which are not.
                 keys = pygame.key.get_pressed()
                 
                 # Reference: https://stackoverflow.com/questions/598398/searching-a-list-of-objects-in-python
@@ -281,14 +292,19 @@ class LevelManager(metaclass=Singleton):
                 for i in range(0, 10):
                     if keys[pygame.K_0 + i]:
                         ascii_value = pygame.K_0 + i
+                        
+                        # Check if the block can be destroyed
                         self.block_manager.destroy_block(ascii_value, 48, self.block_hit_sound)
                         
                 # Detect key presses on letter based blocks
                 for i in range(0, 26):
                     if keys[pygame.K_a + i]:
                         ascii_value = pygame.K_a + i
+                        
+                        # Check if the block can be destroyed
                         self.block_manager.destroy_block(ascii_value + 10, 97, self.block_hit_sound)
 
+    # Get the timer information
     def configure_timer(self, start_timer, current_timer, delay_timer):
         self.timer_info = {
             "start_time": start_timer,

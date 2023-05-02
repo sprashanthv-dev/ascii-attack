@@ -4,6 +4,8 @@ import random
 import pygame
 
 
+# This class creates a letter based block 
+# and initializes the required attributes
 class LetterBlock(Block):
   def __init__(self, block_number: int, block_config, level_manager) -> None:
     super().__init__()
@@ -26,6 +28,8 @@ class LetterBlock(Block):
   def create_block(self):
     block = Block()
 
+    # Assign the required properties to the created
+    # block using the config defined in block factory.
     x_limit = self.block_config["x_limit"]
     y_limit = self.block_config["y_limit"]
 
@@ -44,6 +48,8 @@ class LetterBlock(Block):
     block.point = 1
     block.block_number = str(self.block_number)
     
+    # A block is a special block if it's block   
+    # number is greater than or equal to 36
     block.special_block = True if self.block_number >= 36 else False
 
     return block

@@ -1,9 +1,10 @@
 import pygame
 
 from ui_manager import UIManager
-from welcome_screen import WelcomeScreen
 from button import Button
 
+# The ViewRules class models the rules screen of
+# the game, giving instructions on how to play the game.
 class ViewRules:
   def __init__(self, game_manager):
     self.__game_manager = game_manager
@@ -45,12 +46,11 @@ class ViewRules:
             if event.type == pygame.QUIT:
                 self.game_manager.quit_game = True
 
+            # Handle "Back" button click by returning to Welcome Screen
             elif event.type == pygame.MOUSEBUTTONDOWN and back_button.is_clicked(event):
-                # Handle "Back" button click by returning to Welcome Screen
                 welcome_screen = self.game_manager.welcome_screen
                 back_button_clicked = True
            
-                # TODO: Activate screen once navigated
                 welcome_screen.draw()
                 welcome_screen.handle_interactions()
 
@@ -58,6 +58,7 @@ class ViewRules:
               # Change background color
               self.game_manager.screen.fill((255, 255, 255))
 
+              # Render the game instructions on the screen
               self.draw_box(instructions_text)
 
               # Render "Back" button on the screen
@@ -66,6 +67,7 @@ class ViewRules:
           if not self.game_manager.game_over and not self.game_manager.quit_game:
             pygame.display.update()
 
+  # Load the game instructions from the file
   def load_instructions(self):
       with open("./assets/text_files/instructions.txt") as f:
           instructions_text = f.read()

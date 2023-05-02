@@ -1,6 +1,9 @@
 from block import Block
 
-
+# The BlockDecorator class is the base decorator class.
+# It inherits from Block class and decorates it with
+# additional number of hits during run time. We see
+# the usage of the decorator pattern through this.
 class BlockDecorator(Block):
 
   """

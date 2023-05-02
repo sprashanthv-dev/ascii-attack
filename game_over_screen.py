@@ -3,7 +3,9 @@ from score_calculator import ScoreCalculator
 
 from button import Button
 
-
+# The GameOverScreen class models the Game over
+# screen, displaying the player score and options
+# to restart, quit and updating the game leaderboard.
 class GameOverScreen():
     def __init__(self, game_manager, ui_manager, title_text: str):
         pygame.init()
@@ -90,20 +92,22 @@ class GameOverScreen():
     def is_input_entered(self, value: bool):
         self.__is_input_entered = value
 
+    # Paints the game over UI on the game window
     def load_game_over_ui(self):
         width = self.game_manager.width
         height = self.game_manager.height
 
+        # Stores a reference to the game screen
         self.screen = self.get_game_screen()
 
-        # Need to write logic to get the exact score of player after game over
+        # Get player name as input
         input_text = self.text_font.render("Enter your name", True, (0, 0, 0))
         input_rect = input_text.get_rect(center=(width // 2, 400))
 
-        # Create the Quit and Restart buttons
-        # Assign button positions
+        # Determine button y-coordinate for Restart and Quit
         button_y = height - 150 - self.button_padding
 
+        # Determine button x-coordinate for Restart and Quit
         quit_button_x = width - 200 - self.button_padding
         restart_button_x = 50 + self.button_padding
 
@@ -111,9 +115,9 @@ class GameOverScreen():
         quit_button = self.create_button("Quit", quit_button_x, button_y)
 
         # Add Restart button in bottom left corner
-        restart_button = self.create_button(
-            "Restart", restart_button_x, button_y)
+        restart_button = self.create_button("Restart", restart_button_x, button_y)
         
+        # While the game is over
         while self.game_over_active:
             for event in pygame.event.get():
             # If the player clicks on cross icon in toolbar
@@ -124,6 +128,7 @@ class GameOverScreen():
                 elif quit_button.is_clicked(event):
                     self.game_over_active = False
                     self.handle_quit_game()
+                # Check if restart button was clicked
                 elif restart_button.is_clicked(event):
                     self.handle_restart_game()
                 # If the player types a key
@@ -131,10 +136,12 @@ class GameOverScreen():
                     # If the key is a letter, add it to the name
                     if event.unicode.isalpha():
                         self.name += event.unicode
-                    # If the key is the backspace key, remove the last letter from the name
+                    # If the key is the backspace key, remove the 
+                    # last letter from the name
                     elif event.key == pygame.K_BACKSPACE:
                         self.name = self.name[:-1]
-                    # If the key is the enter key, store the name and go back to the main menu
+                    # If the key is the enter key, store the name 
+                    # and add it to the game leaderboard.
                     elif event.key == pygame.K_RETURN:
                         if len(self.name) > 0:
                             self.handle_input_field()
@@ -146,7 +153,6 @@ class GameOverScreen():
                 # Render title text on the screen
                 title_text_color = (
                     255, 0, 0) if self.title_text == "Game Over" else (83, 145, 101)
-
                 title_text = self.title_font.render(
                     self.title_text, True, title_text_color)
                 self.ui_manager.draw_rect(self.screen, title_text, 200)
@@ -173,6 +179,7 @@ class GameOverScreen():
 
                 pygame.display.update()
 
+    # Obtains a reference to the game screen
     def get_game_screen(self) -> pygame.surface.Surface:
         screen: pygame.surface.Surface
 
@@ -190,10 +197,10 @@ class GameOverScreen():
         if not self.game_over_active:
             pygame.quit()
             
+    # Handles player name input
     def handle_input_field(self):
         if not self.is_input_entered:
             self.game_manager.add_to_leaderboard()
             
     def handle_restart_game(self):
-        # print("going to game manager for restarting game")
         self.game_manager.restart_game()

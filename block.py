@@ -3,6 +3,9 @@ import pygame
 from block_interface import BlockInterface
 
 
+# The Block class implements the BlockInteface
+# and it defines the attributes that characterize
+# a block - both letter and number based ones.
 class Block(BlockInterface):
   
   """
@@ -95,6 +98,7 @@ class Block(BlockInterface):
   def get_hits(self):
     return self
 
+  # Pretty print the block object's attributes
   def __repr__(self):
       return f"{self.__class__.__name__} (\
           {self.sprite}, {self.block_number}, {self.x_pos}, {self.y_pos} \

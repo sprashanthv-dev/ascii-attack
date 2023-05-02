@@ -4,6 +4,8 @@ import random
 import pygame
 
 
+# This class creates a number based block 
+# and initializes the required attributes
 class NumberBlock(Block):
   def __init__(self, block_number: int, block_config, level_manager) -> None:
     super().__init__()
@@ -23,9 +25,12 @@ class NumberBlock(Block):
   def level_manager(self):
     return self.__level_manager
 
+  # Note: Only letter based blocks are designated as special blocks. 
   def create_block(self):
     block = Block()
 
+    # Assign the required properties to the created
+    # block using the config defined in block factory.
     x_limit = self.block_config["x_limit"]
     y_limit = self.block_config["y_limit"]
 
@@ -41,7 +46,11 @@ class NumberBlock(Block):
     block.y_pos = random.randint(y_start, y_limit)
     
     block.speed = (self.level_manager.level_number * speed_multiplier) + y_speed
+    
+    # Number based blocks have an additional point
+    # compared to letter based blocks.
     block.point = 2
+    
     block.block_number = str(self.block_number)
 
     return block

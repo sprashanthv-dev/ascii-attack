@@ -2,7 +2,9 @@ import pygame
 from button import Button
 from pygame.locals import *
 
-# TODO : Add background music in loop
+# The WelcomeScreen class models the introduction screen 
+# of the game providing options to start a new game, view
+# game rules, view high scores and quit the game.
 class WelcomeScreen:
     counter : int = 0
     
@@ -41,6 +43,7 @@ class WelcomeScreen:
         self.background_image = pygame.transform.scale(
             self.background_image, (self.width, self.height))
         
+    # Create the necessary buttons to be displayed
     def initialize_buttons(self):
         
         button_params = self.ui_manager \
@@ -53,6 +56,7 @@ class WelcomeScreen:
         self.view_leaderboard = Button(self.screen, "Leaderboard", button_params["x"], button_params["y"] + 2 * button_params["spacing"])
         self.quit_game = Button(self.screen, "Quit", button_params["x"], button_params["y"] + 3 * button_params["spacing"])
         
+    # Handle the interactions on the created buttons
     def handle_interactions(self):   
         for event in pygame.event.get():
             
@@ -60,17 +64,22 @@ class WelcomeScreen:
             # Or if the player clicks on the quit button
             if event.type == QUIT or self.quit_game.is_clicked(event):
                 self.game_manager.quit_game = True
+            # If start game button was clicked
             if self.start_game.is_clicked(event):
-                # Start timer
                 start_timer = pygame.time.get_ticks()
                 
+                # Increment the level number and call the handler function
                 level_number = self.level_manager.level_number + 1
                 self.game_manager.handle_game_start(start_timer, True, "Level " + str(level_number)) 
+            # If view rules button was clicked
             if self.view_rules.is_clicked(event):
                 self.game_manager.handle_view_rules()
+            # If view leaderboard button was clicked
             if self.view_leaderboard.is_clicked(event):
                 self.game_manager.handle_view_leaderboard()
-                      
+          
+    # Paint the buttons on the screen,
+    # Apply the hover effect listeners.            
     def draw(self):
         self.screen.blit(self.background_image, (0, 0))
         

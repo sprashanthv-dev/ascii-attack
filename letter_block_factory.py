@@ -2,7 +2,7 @@ from block_factory import BlockFactory
 from block import Block
 from letter_block import LetterBlock
 
-"""Factory that aims to provide a letter block"""
+"""Factory class that provides a letter block"""
 
 
 class LetterBlockFactory(BlockFactory):
@@ -24,6 +24,7 @@ class LetterBlockFactory(BlockFactory):
   def level_manager(self):
     return self.__level_manager
 
+  # Create a letter block
   def create_block(self) -> Block:
     letter_block = LetterBlock(self.block_number, self.block_config, self.level_manager)
     return letter_block.create_block()
