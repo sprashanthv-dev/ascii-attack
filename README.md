@@ -4,6 +4,8 @@
 ### **Team Members**:
  - Prashanth Vamanan Srinivasan
  - Ashwin Viswamithiran
+ 
+### **Recorded Video Demo**: https://drive.google.com/file/d/1kBFFURuHwAwYeDx1tQn8qSFHVL096sOy/view?usp=sharing
 
 ### **Project Summary**:
 ASCII Attack is a blend of the gaming classics - Arkanoid and Space Invaders, testing the player’s reflexes and attentiveness. Letter and Number blocks fall from random positions and the player tries to clear them by pressing the corresponding letter or number on the keyboard. The game ends when the player misses “x” number of blocks as per the level before the player’s health expires or when the player clears all levels successfully. Once the game ends, the total points accumulated is displayed along
